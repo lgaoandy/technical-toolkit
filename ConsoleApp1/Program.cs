@@ -1,10 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Drawing;
-using Pastel;
+﻿using System;
+using System.Collections.Generic;
 
-Console.WriteLine("Hello, .NET!".Pastel(Color.LightPink));
+ToDoList.Start();
 
-for (int i = 0; i < 5; i++)
-{
-    Console.WriteLine(i);
-}
