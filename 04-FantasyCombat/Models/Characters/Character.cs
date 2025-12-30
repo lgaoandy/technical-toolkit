@@ -2,15 +2,14 @@ using CombatSystem.Interfaces;
 
 namespace CombatSystem.Models.Characters
 {
-    public abstract class Character(string name = "", int maxHealth = 100) : ICombatant
+    public abstract class Character(string name = "Character", int maxHealth = 100) : ICombatant
     {
         public string Name { get; } = name;
         public int Health { get; private set; } = maxHealth;
         public int MaxHealth { get; } = maxHealth;
         public bool IsAlive { get; private set; } = true;
         protected virtual int BaseDamage { get; } = 1;
-        protected virtual string SpecialAbilityName { get; } = "Inspire";
-        protected virtual bool IsEmpowered { get; private set; } = false;
+        protected virtual string SpecialAbilityName { get; } = "Double Strike";
 
         // Common Methods
         protected abstract int CalculateAttackDamage();
@@ -18,15 +17,7 @@ namespace CombatSystem.Models.Characters
         public virtual void Attack(ICombatant target)
         {
             int damage = CalculateAttackDamage();
-            if (IsEmpowered)
-            {
-                IsEmpowered = false;
-                target.TakeDamage(damage * 2);
-            }
-            else
-            {
-                target.TakeDamage(damage);
-            }
+            target.TakeDamage(damage);
         }
 
         public void TakeDamage(int amount)
@@ -51,8 +42,9 @@ namespace CombatSystem.Models.Characters
 
         public virtual void SpecialAbility(ICombatant target)
         {
-            IsEmpowered = true;
-            Console.WriteLine($"{Name} uses {SpecialAbilityName} - empowering their next attack!");
+            int damage = CalculateAttackDamage();
+            target.TakeDamage(damage * 2);
+            Console.WriteLine($"{Name} uses {SpecialAbilityName} on {target.Name} for {damage} damage!");
         }
     }
 }

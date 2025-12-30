@@ -3,12 +3,15 @@ using CombatSystem.Interfaces;
 // Warrior: basic attacks charges fervor, which can be used to release devastating attacks
 namespace CombatSystem.Models.Characters
 {
-    public class Warrior : Character
+    public class Warrior(string name = "Warrior", int strength = 3, int maxHealth = 130) : Character
     {
+        public new string Name { get; } = name;
+        public new int Health { get; private set; } = maxHealth;
+        public new int MaxHealth { get; } = maxHealth;
         protected new int BaseDamage { get; } = 2;
-        protected new string SpecialAbilityName { get; } = "Earth Smash";
+        protected new string SpecialAbilityName { get; } = "Heaven's Smash";
 
-        protected int Strength { get; set; } = 3;
+        protected int Strength { get; set; } = strength;
         protected int Fervor { get; private set; } = 0;
         protected int MaxFervor { get; } = 100;
 
