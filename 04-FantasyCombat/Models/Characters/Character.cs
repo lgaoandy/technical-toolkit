@@ -2,34 +2,30 @@ using CombatSystem.Interfaces;
 
 namespace CombatSystem.Models.Characters
 {
-    public abstract class Character : ICombatant
+    public abstract class Character(string name = "", int maxHealth = 100) : ICombatant
     {
-        public string Name { get; }
-        public int Health { get; private set; }
-        public int MaxHealth { get; }
-        public bool IsAlive { get; private set } = true;
-        protected int BaseDamage { get; } = 1;
-        protected bool IsEmpowered { get; private set } = false;
-
-        // Constructor
-        public Character(string name = "", int maxHealth = 100)
-        {
-            Name = name;
-            Health = maxHealth; // Initialize current health to max health
-            MaxHealth = maxHealth;
-        }
+        public string Name { get; } = name;
+        public int Health { get; private set; } = maxHealth;
+        public int MaxHealth { get; } = maxHealth;
+        public bool IsAlive { get; private set; } = true;
+        protected virtual int BaseDamage { get; } = 1;
+        protected virtual string SpecialAbilityName { get; } = "Inspire";
+        protected virtual bool IsEmpowered { get; private set; } = false;
 
         // Common Methods
-        public void Attack(ICombatant target)
+        protected abstract int CalculateAttackDamage();
+
+        public virtual void Attack(ICombatant target)
         {
+            int damage = CalculateAttackDamage();
             if (IsEmpowered)
             {
                 IsEmpowered = false;
-                target.TakeDamage(BaseDamage * 2);
+                target.TakeDamage(damage * 2);
             }
             else
             {
-                target.TakeDamage(BaseDamage);
+                target.TakeDamage(damage);
             }
         }
 
@@ -50,22 +46,13 @@ namespace CombatSystem.Models.Characters
 
         public void DisplayStatus()
         {
-            if (IsAlive)
-            {
-                Console.WriteLine($"{Name} is alive, with {Health}/{MaxHealth} HP");
-            }
-            else
-            {
-                Console.WriteLine($"{Name} is dead");
-            }
+            Console.WriteLine($"{Name}: {Health}/{MaxHealth} HP");
         }
-
-        // Specific Methods
-        public abstract void CalculateAttackDamage();
 
         public virtual void SpecialAbility(ICombatant target)
         {
             IsEmpowered = true;
+            Console.WriteLine($"{Name} uses {SpecialAbilityName} - empowering their next attack!");
         }
     }
 }
