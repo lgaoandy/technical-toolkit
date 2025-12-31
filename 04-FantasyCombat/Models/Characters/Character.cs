@@ -1,4 +1,5 @@
 using CombatSystem.Interfaces;
+using CombatSystem.Enums;
 
 namespace CombatSystem.Models.Characters
 {
@@ -8,6 +9,7 @@ namespace CombatSystem.Models.Characters
         public int Health { get; private set; } = maxHealth;
         public int MaxHealth { get; } = maxHealth;
         public bool IsAlive { get; private set; } = true;
+        public Debuff[] Debuffs { get; } = [];
         protected virtual int BaseDamage { get; } = 1;
         protected virtual string SpecialAbilityName { get; } = "Double Strike";
 

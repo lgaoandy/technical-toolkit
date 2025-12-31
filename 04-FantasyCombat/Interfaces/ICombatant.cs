@@ -1,3 +1,5 @@
+using CombatSystem.Enums;
+
 namespace CombatSystem.Interfaces
 {
     public interface ICombatant
@@ -6,6 +8,7 @@ namespace CombatSystem.Interfaces
         int Health { get; }
         int MaxHealth { get; }
         bool IsAlive { get; }
+        Debuff[] Debuffs { get; }
         void Attack(ICombatant target);
         void TakeDamage(int amount);
         void DisplayStatus();
