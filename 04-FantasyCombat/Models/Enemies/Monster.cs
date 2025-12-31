@@ -9,7 +9,7 @@ namespace CombatSystem.Models.Enemies
         public int Health { get; private set; } = maxHealth;
         public int MaxHealth { get; } = maxHealth;
         public bool IsAlive { get; private set; } = true;
-        public Debuff[] Debuffs { get; private set; } = [];
+        public Debuff[] Debuffs { get; set; } = [];
         public int Strength { get; } = strength;
 
         public void Attack(ICombatant target)
@@ -23,19 +23,20 @@ namespace CombatSystem.Models.Enemies
                 if (hitChance < 30)
                 {
                     Console.WriteLine($"{Name} is frostbitten - freezing in place and unable to attack!");
-                    Debuffs = (Debuff[])Debuffs.Where(debuff => debuff != Debuff.FrostBitten);
+                    Debuffs = Debuffs.Where(debuff => debuff != Debuff.FrostBitten).ToArray();
                     return;
                 }
             }
             
             // Standard attack
             int damage = rnd.Next(1, Strength + 1);
+            Console.WriteLine($"{Name} attacks {target.Name} for {damage} damage!"); 
             target.TakeDamage(damage);
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(int amount)
         {
-            Health -= Math.Max(damage, 0);
+            Health -= amount;
 
             // If immolated, burns for 2% of max health
             if (Debuffs.Contains(Debuff.Immolated))
@@ -46,8 +47,9 @@ namespace CombatSystem.Models.Enemies
             }
 
             // Check if monster is still alive
-            if (Health == 0)
+            if (Health < 0)
             {
+                Health = 0;
                 IsAlive = false;
                 Console.WriteLine($"{Name} has been slain!");
             }

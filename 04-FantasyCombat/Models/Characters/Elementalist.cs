@@ -4,25 +4,25 @@ using CombatSystem.Enums;
 // Elementalist: switch between ice and fire for optimal damage
 namespace CombatSystem.Models.Characters
 {
-    public class Elementalist(string name = "Elementalist", int Intelligence = 3, int maxHealth = 110) : Character
+    public class Elementalist(string name = "Elementalist", int intelligence = 3, int maxHealth = 80) : Character
     {
-        public new string Name { get; } = name;
-        public new int Health { get; private set; } = maxHealth;
-        public new int MaxHealth { get; } = maxHealth;
-        protected new string SpecialAbilityName { get; } = "Elemental Visage";
+        public override string Name { get; } = name;
+        public override int Health { get; set; } = maxHealth;
+        public override int MaxHealth { get; } = maxHealth;
+        protected override string SpecialAbilityName { get; } = "Elemental Visage";
 
         // Distinct properties
-        public int Intelligence { get; set; } = Intelligence;
-        public int Mana = 20 + 5 * Intelligence;
-        public int MaxMana = 20 + 5 * Intelligence;
+        public int Intelligence { get; set; } = intelligence;
+        public int Mana = 20 + 5 * intelligence;
+        public int MaxMana = 20 + 5 * intelligence;
         protected Element[] Elements = [Element.Fire, Element.Ice];
-        protected Element CurrentElement = Element.Fire;
+        public Element CurrentElement { get; private set; } = Element.Fire;
         protected bool ManaShield = false;
-        protected int ManaShieldStrength = 5;
+        protected int ManaShieldStrength = 4 + (int)Math.Floor(intelligence * 0.43);
 
         protected override int CalculateAttackDamage()
         {
-            return BaseDamage + (int)Math.Floor(Intelligence / 2.0);
+            return BaseDamage + (int)Math.Floor(Intelligence / 3.0);
         }
 
         public override void TakeDamage(int amount)
@@ -30,6 +30,7 @@ namespace CombatSystem.Models.Characters
             // If have mana shield, absorbs amount first
             if (ManaShield)
             {
+                Console.WriteLine($"{Name}'s mana shield absorbs {Math.Min(amount, ManaShieldStrength)} damage!");
                 amount -= ManaShieldStrength;
                 ManaShield = false;
             }
@@ -55,7 +56,7 @@ namespace CombatSystem.Models.Characters
                 // If a frostbitten enemy endures a fire attack, deals 8% of their health as bonus elemental damage and regens 3 mana
                 if (target.Debuffs.Contains(Debuff.FrostBitten))
                 {
-                    damageElemental = (int)Math.Ceiling(target.Health * 1.08);
+                    damageElemental = (int)Math.Ceiling(target.MaxHealth * 0.08);
                     target.Debuffs.Replace(Debuff.FrostBitten, Debuff.Scorched);
                     RegenMana(3);
                     Console.WriteLine($"{Name} shatters a frostbitten {target.Name} with fire, dealing bonus elemental {damageElemental} damage and regained 3 mana.");
@@ -65,13 +66,17 @@ namespace CombatSystem.Models.Characters
                 {
                     target.Debuffs.Replace(Debuff.Scorched, Debuff.Immolated);
                 }
+                else
+                {
+                    target.Debuffs = target.Debuffs.Append(Debuff.Scorched).ToArray();
+                }
             }
             else
             {
-                // If an immolated enemy endures an ice attack, deals 40 explosive damage
+                // If an immolated enemy endures an ice attack, deals explosive damage
                 if (target.Debuffs.Contains(Debuff.Immolated))
                 {
-                    damageElemental = 40;
+                    damageElemental = 20 + (int)Math.Floor(Intelligence * 1.5);
                     target.Debuffs.Replace(Debuff.Immolated, Debuff.Chilled);
                     Console.WriteLine($"{Name} melts an immolated {target.Name} with ice, dealing bonus explosive {damageElemental} damage!");
                 }
@@ -80,17 +85,22 @@ namespace CombatSystem.Models.Characters
                 {
                     target.Debuffs.Replace(Debuff.Chilled, Debuff.FrostBitten);
                 }
+                else
+                {
+                    target.Debuffs = target.Debuffs.Append(Debuff.Chilled).ToArray();
+                }
             }
 
+            Console.WriteLine($"{Name} attacks {target.Name} for {damageBase} damage!");
             target.TakeDamage(damageBase + damageElemental);
 
             // Mana regens on enemy defeat
             if (target.Health == 0)
             {
                 double regenFactor = 2.0 + 8.4711 * Math.Exp(-0.019076 * Intelligence);
-                int manaRegen = (int)Math.Ceiling(target.Health / regenFactor);
-                RegenMana(manaRegen);
+                int manaRegen = (int)Math.Ceiling(target.MaxHealth / regenFactor);
                 Console.WriteLine($"{Name} has slain {target.Name}, regening {manaRegen} mana.");
+                RegenMana(manaRegen);
             }
         }
 
@@ -107,7 +117,7 @@ namespace CombatSystem.Models.Characters
                     Element.Ice => Element.Fire,
                     _ => CurrentElement
                 };
-                Console.WriteLine($"{Name} uses {SpecialAbilityName} - gaining a mana shield and swapped to {CurrentElement} element!");
+                Console.WriteLine($"{Name} uses {SpecialAbilityName} - gaining mana shield and swapping to {CurrentElement}!");
                 return true;
             }
             return false;

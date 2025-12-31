@@ -5,11 +5,11 @@ namespace CombatSystem.Models.Characters
 {
     public abstract class Character(string name = "Character", int maxHealth = 100) : ICombatant
     {
-        public string Name { get; } = name;
-        public int Health { get; private set; } = maxHealth;
-        public int MaxHealth { get; } = maxHealth;
-        public bool IsAlive { get; private set; } = true;
-        public Debuff[] Debuffs { get; } = [];
+        public virtual string Name { get; } = name;
+        public virtual int Health { get; set; } = maxHealth;
+        public virtual int MaxHealth { get; } = maxHealth;
+        public virtual bool IsAlive { get; private set; } = true;
+        public Debuff[] Debuffs { get; set; } = [];
         protected virtual int BaseDamage { get; } = 1;
         protected virtual string SpecialAbilityName { get; } = "Double Strike";
 
@@ -19,21 +19,16 @@ namespace CombatSystem.Models.Characters
         public virtual void Attack(ICombatant target)
         {
             int damage = CalculateAttackDamage();
+            Console.WriteLine($"{Name} attacks {target.Name} for {damage} damage!");
             target.TakeDamage(damage);
         }
 
         public virtual void TakeDamage(int amount)
         {
-            Health -= Math.Max(amount, 0);
-            // Check if character is still alive
-            if (Health == 0)
+            Health = Math.Max(Health - amount, 0);
+            if (Health == 0) // Check if character is still alive
             {
                 IsAlive = false;
-                Console.WriteLine($"{Name} has been slain!");
-            }
-            else
-            {
-                Console.WriteLine($"{Name} has substained damage with {Health} HP left");
             }
         }
 

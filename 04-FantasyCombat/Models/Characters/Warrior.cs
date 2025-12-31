@@ -5,11 +5,11 @@ namespace CombatSystem.Models.Characters
 {
     public class Warrior(string name = "Warrior", int strength = 3, int maxHealth = 130) : Character
     {
-        public new string Name { get; } = name;
-        public new int Health { get; private set; } = maxHealth;
-        public new int MaxHealth { get; } = maxHealth;
-        protected new int BaseDamage { get; } = 2;
-        protected new string SpecialAbilityName { get; } = "Heaven's Smash";
+        public override string Name { get; } = name;
+        public override int Health { get; set; } = maxHealth;
+        public override int MaxHealth { get; } = maxHealth;
+        protected override int BaseDamage { get; } = 2;
+        protected override string SpecialAbilityName { get; } = "Heaven's Smash";
 
         public int Strength { get; set; } = strength;
         protected int Fervor { get; private set; } = 0;
@@ -17,7 +17,7 @@ namespace CombatSystem.Models.Characters
 
         private void IncreaseFervor()
         {
-            Fervor = Math.Min(Fervor + 12, MaxFervor);
+            Fervor = Math.Min(Fervor + 9 + Strength, MaxFervor);
         }
 
         public override void Attack(ICombatant target)
