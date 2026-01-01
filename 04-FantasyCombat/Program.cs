@@ -9,7 +9,7 @@ namespace CombatSystem.Program
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Warrior gunnar = new("Gunnar", 3, 135);
             Monk collin = new("Collin", 5, 140);
