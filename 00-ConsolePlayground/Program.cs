@@ -1,6 +1,7 @@
 ﻿using MiniProjects.StudentAverage;
 using MiniProjects.GPACalculator;
 using MiniProjects.SubscriptionRenewalMessage;
+using MiniProjects.FraudulentOrders;
 
 class Program
 {
@@ -8,7 +9,8 @@ class Program
     {
         // StudentAverage.Run();
         // GPACalculator.Run();
-        SubscriptionRenewalMessage.Display();
+        // SubscriptionRenewalMessage.Display();
+        FraudulentOrders.Detect();
 
         // Random dice = new();
         // int roll1 = dice.Next(1,7);
