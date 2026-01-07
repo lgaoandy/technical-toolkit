@@ -41,6 +41,13 @@ namespace MiniProjects.StudentGrading
             return average / exams;
         }
 
+        static void ExitViaEnter()
+        {
+            Console.WriteLine("Press the Enter key to continue");
+
+            while (Console.ReadKey(intercept: true).Key != ConsoleKey.Enter) {}
+        }
+        
         public static void Run()
         {
             Console.WriteLine($"Student\t\tGrade");
@@ -84,8 +91,7 @@ namespace MiniProjects.StudentGrading
                 i++;
             }
 
-            Console.WriteLine("Press the Enter key to continue");
-            Console.ReadKey();
+            ExitViaEnter();
         }
     }
 }
