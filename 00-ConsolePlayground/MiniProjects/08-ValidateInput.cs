@@ -68,5 +68,25 @@ namespace MiniProjects.ValidateInput
                 Console.Write($"The role name that you entered, \"{input}\" is not valid. ");
             }
         }
+
+        // Project #3
+        public static void AskLikes()
+        {
+            string[] myStrings = ["I like pizza. I like roast chicken. I like salad", "I like all three of the menu choices"];
+
+            foreach (string myString in myStrings)
+            {
+                string sentence = myString;
+                while (true)
+                {
+                    int nextPeriod = sentence.IndexOf('.');
+                    if (nextPeriod == -1)
+                        break;
+                    Console.WriteLine(sentence[..nextPeriod].Trim());
+                    sentence = sentence[(nextPeriod + 1)..];
+                }
+                Console.WriteLine(sentence.Trim());
+            }
+        }
     }
 }

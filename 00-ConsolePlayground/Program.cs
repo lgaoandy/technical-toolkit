@@ -18,8 +18,10 @@ class Program
         // StudentGrading.Run();
         // PermissionsAndLevels.Run();
         // FizzBuzz.Run(100);
+
         // ValidateInput.AskInt();
-        ValidateInput.AskRole();
+        // ValidateInput.AskRole();
+        ValidateInput.AskLikes();
 
 
     }
