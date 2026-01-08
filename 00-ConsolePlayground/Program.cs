@@ -5,6 +5,7 @@ using MiniProjects.FraudulentOrders;
 using MiniProjects.StudentGrading;
 using MiniProjects.PermissionsAndLevels;
 using MiniProjects.FizzBuzz;
+using MiniProjects.ValidateInput;
 
 class Program
 {
@@ -16,7 +17,9 @@ class Program
         // FraudulentOrders.Detect();
         // StudentGrading.Run();
         // PermissionsAndLevels.Run();
-        FizzBuzz.Run(100);
+        // FizzBuzz.Run(100);
+        // ValidateInput.AskInt();
+        ValidateInput.AskRole();
 
 
     }
