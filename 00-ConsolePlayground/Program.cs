@@ -6,6 +6,7 @@ using MiniProjects.StudentGrading;
 using MiniProjects.PermissionsAndLevels;
 using MiniProjects.FizzBuzz;
 using MiniProjects.ValidateInput;
+using MiniProjects.DataConversion;
 
 class Program
 {
@@ -21,8 +22,8 @@ class Program
 
         // ValidateInput.AskInt();
         // ValidateInput.AskRole();
-        ValidateInput.AskLikes();
+        // ValidateInput.AskLikes();
 
-
+        // DataConversion.Decode(["12.3", "45", "ABC", "11", "DEF"]);
     }
 }
