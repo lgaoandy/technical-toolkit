@@ -25,5 +25,6 @@ class Program
         // ValidateInput.AskLikes();
 
         // DataConversion.Decode(["12.3", "45", "ABC", "11", "DEF"]);
+        DataConversion.Divide();
     }
 }
