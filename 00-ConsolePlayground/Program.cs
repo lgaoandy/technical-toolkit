@@ -9,6 +9,7 @@ using MiniProjects.ValidateInput;
 using MiniProjects.DataConversion;
 using MiniProjects.ArrayManipulation;
 using MiniProjects.StringInterpolation;
+using MiniProjects.StringExtraction;
 
 class Program
 {
@@ -32,6 +33,8 @@ class Program
         // ArrayManipulation.ReverseWords("The quick brown fox jumps over the lazy dog");
         // ArrayManipulation.SortId("B123,C234,A345,C15,B177,G3003,C235,B179");
 
-        StringInterpolation.PrintShares();
+        // StringInterpolation.PrintShares();
+
+        StringExtraction.ExtractHTML();
     }
 }
