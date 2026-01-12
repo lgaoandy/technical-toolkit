@@ -243,6 +243,16 @@ namespace MiniProjects.DogDonation
             Console.WriteLine("3.".PadLeft(4).PadRight(6) + "Enter (3 or exit) to leave program");
         }
 
+        static void SearchAnimation(string dogName, string trait)
+        {
+            string[] icons = [".", "..", "..."];
+            foreach (string icon in icons)
+            {
+                Console.Write($"\rSearching our dog {dogName} for {trait}{icon} ");
+                Thread.Sleep(250);
+            }
+        }
+
         static void DisplayDog(string[,] dogs, int i)
         {
             Console.WriteLine($"{dogs[i, 1]} (ID# {dogs[i, 0]})");
@@ -260,7 +270,7 @@ namespace MiniProjects.DogDonation
             PressAnyKeyToContinue();
         }
 
-        static void SearchCharacteristics(string[,] dogs)
+        static void SearchForTraits(string[,] dogs)
         {
             // Prompt user for search in comma separated list
             string userResponse = AskUser("\nIn a comma-separated list, Enter the traits you are seeking: ");
@@ -278,6 +288,7 @@ namespace MiniProjects.DogDonation
                 for (int j = 0; j < n; j++) // Checks if any traits match current dog
                 {
                     string dogDescription = dogs[i, 3].Trim().ToLower() + " " + dogs[i, 4].Trim().ToLower();
+                    SearchAnimation(dogs[i, 1], traits[j]);
                     if (dogDescription.Contains(traits[j]))
                     {
                         Console.WriteLine($"Our dog {dogs[i, 1]} is a {traits[j].Pastel(Color.Gold)} match!");
@@ -297,6 +308,7 @@ namespace MiniProjects.DogDonation
                 Console.WriteLine("There are no dogs with your characteristics!");
             PressAnyKeyToContinue();
         }
+
 
         // Reference material: https://learn.microsoft.com/en-us/training/modules/challenge-project-work-variable-data-c-sharp/2-prepare
         public static void RunChallenge()
@@ -336,7 +348,7 @@ namespace MiniProjects.DogDonation
                         DisplayDogs(ourDogs);
                         break;
                     case "2":
-                        SearchCharacteristics(ourDogs);
+                        SearchForTraits(ourDogs);
                         break;
                     case "3":
                     case "exit":
