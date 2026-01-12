@@ -10,7 +10,7 @@ namespace MiniProjects.StringExtraction
         }
 
         // https://learn.microsoft.com/en-us/training/modules/csharp-modify-content/5-exercise-challenge-extract-replace-remove-data        
-        public static void ExtractHTML()
+        public static void ExtractHTMLExercise()
         {
             const string input = "<div><h2>Widgets &trade;</h2><span>5000</span></div>";
 
