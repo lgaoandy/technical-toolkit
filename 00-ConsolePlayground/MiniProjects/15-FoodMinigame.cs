@@ -13,7 +13,7 @@ namespace MiniProjects.FoodMinigame
 
             // Console position of the player
             int playerX = 0;
-            int playerY = 0;
+            int playerY = 2;
 
             // Console position of the food
             int foodX = 0;
@@ -21,7 +21,7 @@ namespace MiniProjects.FoodMinigame
 
             // Available player and food strings
             string[] states = ["('-')", "(^-^)", "(X_X)"];
-            string[] foods = ["\U0001F32D", "\U0001F950", "\U0001F363"];
+            string[] foods = ["🍙", "🍣", "🍕"];
 
             // Current player string displayed in the Console
             string player = states[0];
@@ -32,8 +32,35 @@ namespace MiniProjects.FoodMinigame
             InitializeGame();
             while (!shouldExit)
             {
-                Move(TerminalResized());
-                CheckFood();
+                if (TerminalResized())
+                {
+                    Console.Clear();
+                    Console.Write("Console was resized. Program exiting...");
+                    break;
+                }
+
+                if (PlayerIsFaster())
+                    Move(3, false);
+                else if (PlayerIsSick())
+                    FreezePlayer();
+                else
+                    Move(otherKeysExit: false);
+
+                if (GotFood())
+                {
+                    ChangePlayer();
+                    ShowFood();
+                }
+            }
+
+            bool PlayerIsFaster()
+            {
+                return player.Equals(states[1]);
+            }
+
+            bool PlayerIsSick()
+            {
+                return player.Equals(states[2]);
             }
 
             // Returns true if the Terminal was resized 
@@ -45,25 +72,24 @@ namespace MiniProjects.FoodMinigame
             // Displays random food at a random location
             void ShowFood()
             {
+                do
+                {
+                    // Update food position to a random location
+                    foodX = random.Next(0, width - 1);
+                    foodY = random.Next(0, height - 1);
+                } while (GotFood());
+
                 // Update food to a random index
                 food = random.Next(0, foods.Length);
-
-                // Update food position to a random location
-                foodX = random.Next(0, width - player.Length);
-                foodY = random.Next(0, height - 1);
 
                 // Display the food at the location
                 Console.SetCursorPosition(foodX, foodY);
                 Console.Write(foods[food]);
             }
 
-            void CheckFood()
+            bool GotFood()
             {
-                if (playerX + 4 >= foodX && playerX - 1 <= foodX && playerY == foodY)
-                {
-                    ChangePlayer();
-                    ShowFood();
-                }
+                return playerX - 1 <= foodX && playerX + 4 >= foodX && playerY == foodY;
             }
 
             // Changes the player to match the food consumed
@@ -72,8 +98,6 @@ namespace MiniProjects.FoodMinigame
                 player = states[food];
                 Console.SetCursorPosition(playerX, playerY);
                 Console.Write(player);
-                if (player == "(X_X)")
-                    FreezePlayer();
             }
 
             // Temporarily stops the player from moving
@@ -86,18 +110,10 @@ namespace MiniProjects.FoodMinigame
             }
 
             // Reads directional input from the Console and moves the player
-            void Move(bool terminalResized)
+            void Move(int speed = 1, bool otherKeysExit = false)
             {
                 int lastX = playerX;
                 int lastY = playerY;
-
-                if (terminalResized)
-                {
-                    shouldExit = true;
-                    Console.Write("\r");
-                    Console.WriteLine("Console was resized. Program exiting.");
-                    return;
-                }
 
                 switch (Console.ReadKey(true).Key)
                 {
@@ -108,13 +124,16 @@ namespace MiniProjects.FoodMinigame
                         playerY++;
                         break;
                     case ConsoleKey.LeftArrow:
-                        playerX--;
+                        playerX -= speed;
                         break;
                     case ConsoleKey.RightArrow:
-                        playerX++;
+                        playerX += speed;
+                        break;
+                    case ConsoleKey.Escape:
+                        shouldExit = true;
                         break;
                     default:
-                        shouldExit = true;
+                        shouldExit = otherKeysExit;
                         break;
                 }
 
@@ -139,7 +158,7 @@ namespace MiniProjects.FoodMinigame
             {
                 Console.Clear();
                 ShowFood();
-                Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(playerX, playerY);
                 Console.Write(player);
             }
         }
