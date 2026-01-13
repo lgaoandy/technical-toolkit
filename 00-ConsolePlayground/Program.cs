@@ -12,6 +12,7 @@ using MiniProjects.StringInterpolation;
 using MiniProjects.StringExtraction;
 using MiniProjects.DogDonation;
 using MiniProjects.ContosoPettingZoo;
+using MiniProjects.FoodMinigame;
 
 class Program
 {
@@ -21,7 +22,7 @@ class Program
         // GPACalculator.Run();
         // SubscriptionRenewalMessage.Display();
         // FraudulentOrders.Detect();
-        // StudentGrading.Run();
+        // StudentGrading.Run();gfffff
         // PermissionsAndLevels.Run();
         // FizzBuzz.Run(100);
         // ValidateInput.AskInt();
@@ -37,5 +38,6 @@ class Program
         // DogDonation.RunChallenge();
         // ContosoPettingZoo.PlanAllSchools();
         // ContosoPettingZoo.PlanSchoolVisit("School D", 8);
+        FoodMinigame.Run();
     }
 }
