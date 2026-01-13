@@ -35,6 +35,7 @@ class Program
         // StringExtraction.ExtractHTMLExercise();
         // DogDonation.RunGuided();
         // DogDonation.RunChallenge();
-        ContosoPettingZoo.PlanSchoolVisit("School A");
+        // ContosoPettingZoo.PlanAllSchools();
+        // ContosoPettingZoo.PlanSchoolVisit("School D", 8);
     }
 }
