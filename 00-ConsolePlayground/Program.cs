@@ -11,6 +11,7 @@ using MiniProjects.ArrayManipulation;
 using MiniProjects.StringInterpolation;
 using MiniProjects.StringExtraction;
 using MiniProjects.DogDonation;
+using MiniProjects.ContosoPettingZoo;
 
 class Program
 {
@@ -33,6 +34,7 @@ class Program
         // StringInterpolation.PrintShares();
         // StringExtraction.ExtractHTMLExercise();
         // DogDonation.RunGuided();
-        DogDonation.RunChallenge();
+        // DogDonation.RunChallenge();
+        ContosoPettingZoo.PlanSchoolVisit("School A");
     }
 }
