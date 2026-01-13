@@ -251,7 +251,7 @@ namespace MiniProjects.DogDonation
                 Console.Write($"\rSearching our dog {dogName} for {trait}{icon} ");
                 Thread.Sleep(200);
             }
-            Console.Write($"\r{new String(' ', Console.BufferWidth)}"); // Clears the current terminal tab
+            Console.Write($"\r{new String(' ', Console.BufferWidth)}\r"); // Clears the current terminal tab then return to leftmost line
         }
 
         static void DisplayDog(string[,] dogs, int i)
@@ -292,7 +292,7 @@ namespace MiniProjects.DogDonation
                     SearchAnimation(dogs[i, 1], traits[j]);
                     if (dogDescription.Contains(traits[j]))
                     {
-                        Console.WriteLine($"\rOur dog {dogs[i, 1]} is a {traits[j].Pastel(Color.Gold)} match!");
+                        Console.WriteLine($"Our dog {dogs[i, 1]} is a {traits[j].Pastel(Color.Gold)} match!");
                         match = true;
                     }
                 }
