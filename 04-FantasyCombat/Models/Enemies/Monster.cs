@@ -47,7 +47,7 @@ namespace CombatSystem.Models.Enemies
             }
 
             // Check if monster is still alive
-            if (Health < 0)
+            if (Health <= 0)
             {
                 Health = 0;
                 IsAlive = false;

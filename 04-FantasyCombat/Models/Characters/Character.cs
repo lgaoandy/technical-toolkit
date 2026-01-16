@@ -25,10 +25,22 @@ namespace CombatSystem.Models.Characters
 
         public virtual void TakeDamage(int amount)
         {
-            Health = Math.Max(Health - amount, 0);
-            if (Health == 0) // Check if character is still alive
+            Health -= amount;
+
+            // If immolated, burns for 2% of max health
+            if (Debuffs.Contains(Debuff.Immolated))
             {
+                int burn = (int)Math.Ceiling(MaxHealth * 0.02);
+                Health -= burn;
+                Console.WriteLine($"{Name} is immolated - burning for {burn} bonus damage!");
+            }
+
+            // Check if monster is still alive
+            if (Health <= 0)
+            {
+                Health = 0;
                 IsAlive = false;
+                Console.WriteLine($"{Name} has been slain!");
             }
         }
 

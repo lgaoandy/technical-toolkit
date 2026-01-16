@@ -59,7 +59,7 @@ namespace CombatSystem.Models.Characters
 
         private int InflictExplosion(ICombatant target)
         {
-            int damage = 20 + (int)Math.Floor(Intelligence * 1.5);
+            int damage = 20 + (int)Math.Floor(Intelligence * 1.8);
             target.Debuffs.Remove(Debuff.Immolated);
             Console.WriteLine($"{Name} melts an immolated {target.Name} with ice, dealing bonus explosive {damage} damage!");
             return damage;
@@ -73,7 +73,7 @@ namespace CombatSystem.Models.Characters
             {
                 if (target.Debuffs.Contains(Debuff.FrostBitten))
                     damage = InflictIceShatter(target);
-                if (target.Debuffs.Remove(Debuff.Scorched))
+                else if (target.Debuffs.Remove(Debuff.Scorched))
                     target.Debuffs.Add(Debuff.Immolated);
                 else
                     target.Debuffs.Add(Debuff.Scorched);
@@ -82,7 +82,7 @@ namespace CombatSystem.Models.Characters
             {
                 if (target.Debuffs.Contains(Debuff.Immolated))
                     damage = InflictExplosion(target);
-                if (target.Debuffs.Remove(Debuff.Chilled))
+                else if (target.Debuffs.Remove(Debuff.Chilled))
                     target.Debuffs.Add(Debuff.FrostBitten);
                 else
                     target.Debuffs.Add(Debuff.Chilled);

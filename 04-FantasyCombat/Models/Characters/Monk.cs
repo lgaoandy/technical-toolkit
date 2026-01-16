@@ -61,8 +61,8 @@ namespace CombatSystem.Models.Characters
                 // Spend stamina
                 StaminaMeter -= 10;
 
-                // Heals for 8% of missing health
-                int healing = CalculateHealing(0.08);
+                // Heals for 6% of missing health
+                int healing = CalculateHealing(0.06);
                 Health += healing;
 
                 // Console message
