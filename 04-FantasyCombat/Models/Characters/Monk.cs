@@ -44,21 +44,40 @@ namespace CombatSystem.Models.Characters
             return dmg;
         }
 
+        private int CalculateHealing(double percentMissingHP)
+        {
+            int missingHealth = MaxHealth - Health;
+            return (int)Math.Round(missingHealth * percentMissingHP);
+        }
+
         public override void SpecialAbility(ICombatant target)
         {
             if (CanCast())
             {
-                int damage = CalculateAttackDamage() + (int)Math.Round(Constitution * 1.25);
+                // Boost damage by 40%
+                int damage = (int)Math.Round(CalculateAttackDamage() * 1.40);
                 target.TakeDamage(damage);
+
+                // Spend stamina
                 StaminaMeter -= 10;
-                Health = Math.Min(MaxHealth, Health + Constitution);
-                Console.WriteLine($"{Name} uses {SpecialAbilityName.Pastel(Color.Yellow)} on {target.Name} for {damage} damage, and healing {Constitution} HP!");
+
+                // Heals for 8% of missing health
+                int healing = CalculateHealing(0.08);
+                Health += healing;
+
+                // Console message
+                Console.WriteLine($"{Name} uses {SpecialAbilityName.Pastel(Color.Yellow)} on {target.Name} for {damage} damage, and healing {healing} HP!");
             }
         }
 
         public bool CanCast()
         {
             return StaminaMeter >= 10;
+        }
+
+        public bool CanOptimalCast()
+        {
+            return CanCast() && (Health / MaxHealth) < 0.4;
         }
     }
 }

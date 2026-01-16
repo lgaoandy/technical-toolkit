@@ -40,13 +40,11 @@ namespace CombatSystem.Managers.CombatManager
                 // Use special ability if possible
                 if (attacker is Warrior warrior && warrior.CanCast())
                     warrior.SpecialAbility(defender);
-                else if (attacker is Elementalist elementalist && elementalist.OptimalCast(defender))
+                else if (attacker is Elementalist elementalist && elementalist.CanOptimalCast(defender))
                     elementalist.SpecialAbility(defender);
-                else if (attacker is Monk monk && monk.CanCast())
+                else if (attacker is Monk monk && monk.CanOptimalCast())
                     monk.SpecialAbility(defender);
-
-                // Standard attack
-                else
+                else // Standard attack
                     attacker.Attack(defender);
 
                 // Announce every exchange

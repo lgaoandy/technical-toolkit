@@ -48,24 +48,31 @@ namespace CombatSystem.Models.Characters
             Mana = Math.Min(MaxMana, Mana + manaRegen);
         }
 
+        private int InflictIceShatter(ICombatant target)
+        {
+            int damage = (int)Math.Ceiling(target.MaxHealth * 0.08);
+            RegenMana(3);
+            target.Debuffs.Remove(Debuff.FrostBitten);
+            Console.WriteLine($"{Name} shatters a frostbitten {target.Name} with fire, dealing bonus elemental {damage} damage and regained 3 mana.");
+            return damage;
+        }
+
+        private int InflictExplosion(ICombatant target)
+        {
+            int damage = 20 + (int)Math.Floor(Intelligence * 1.5);
+            target.Debuffs.Remove(Debuff.Immolated);
+            Console.WriteLine($"{Name} melts an immolated {target.Name} with ice, dealing bonus explosive {damage} damage!");
+            return damage;
+        }
+
         // Modify attack to add elemental effects and mana regen on enemy death
         public override void Attack(ICombatant target)
         {
-            int damageBase = CalculateAttackDamage();
-            int damageElemental = 0;
-
+            int damage = 0;
             if (CurrentElement == Element.Fire)
             {
-                // If a frostbitten enemy endures a fire attack, deals 8% of their health as bonus elemental damage and regens 3 mana
                 if (target.Debuffs.Contains(Debuff.FrostBitten))
-                {
-                    damageElemental = (int)Math.Ceiling(target.MaxHealth * 0.08);
-                    target.Debuffs.Remove(Debuff.FrostBitten);
-                    RegenMana(3);
-                    Console.WriteLine($"{Name} shatters a frostbitten {target.Name} with fire, dealing bonus elemental {damageElemental} damage and regained 3 mana.");
-                }
-
-                // If enemy is already scorched, enemy becomes immolated
+                    damage = InflictIceShatter(target);
                 if (target.Debuffs.Remove(Debuff.Scorched))
                     target.Debuffs.Add(Debuff.Immolated);
                 else
@@ -73,23 +80,20 @@ namespace CombatSystem.Models.Characters
             }
             else
             {
-                // If an immolated enemy endures an ice attack, deals explosive damage
                 if (target.Debuffs.Contains(Debuff.Immolated))
-                {
-                    damageElemental = 20 + (int)Math.Floor(Intelligence * 1.5);
-                    target.Debuffs.Remove(Debuff.Immolated);
-                    Console.WriteLine($"{Name} melts an immolated {target.Name} with ice, dealing bonus explosive {damageElemental} damage!");
-                }
-
-                // If enemy is already chilled, upgrades to frostbitten
+                    damage = InflictExplosion(target);
                 if (target.Debuffs.Remove(Debuff.Chilled))
                     target.Debuffs.Add(Debuff.FrostBitten);
                 else
                     target.Debuffs.Add(Debuff.Chilled);
             }
 
-            Console.WriteLine($"{Name} attacks {target.Name} for {damageBase} damage!");
-            target.TakeDamage(damageBase + damageElemental);
+            if (damage == 0)
+            {
+                damage = CalculateAttackDamage();
+                Console.WriteLine($"{Name} attacks {target.Name} for {damage} damage!");
+            }
+            target.TakeDamage(damage);
 
             // Mana regens on enemy defeat
             if (target.Health == 0)
@@ -123,7 +127,7 @@ namespace CombatSystem.Models.Characters
             return Mana >= 8;
         }
 
-        public bool OptimalCast(ICombatant target)
+        public bool CanOptimalCast(ICombatant target)
         {
             if (!CanCast())
                 return false;
