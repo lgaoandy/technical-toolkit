@@ -118,6 +118,7 @@ namespace CombatSystem.Models.Characters
                     Element.Ice => Element.Fire,
                     _ => CurrentElement
                 };
+                target.TakeDamage(0);
                 Console.WriteLine($"{Name} uses {SpecialAbilityName.Pastel(Color.Blue)} - gaining mana shield and swapping to {CurrentElement}!");
             }
         }

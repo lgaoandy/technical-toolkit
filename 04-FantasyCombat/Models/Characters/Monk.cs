@@ -33,7 +33,7 @@ namespace CombatSystem.Models.Characters
             int critChance = rnd.Next(0, 101) / 100;
 
             // Increase hit counter
-            StaminaMeter += 2;
+            StaminaMeter++;
 
             // Output damage
             if (critChance > 0.90)

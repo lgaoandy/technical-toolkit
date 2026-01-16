@@ -12,9 +12,9 @@ namespace CombatSystem.Program
         static void Main()
         {
             Warrior gunnar = new("Gunnar", 3, 140);
-            Monk collin = new("Collin", 6, 100);
+            Monk collin = new("Collin", 7, 110);
             Elementalist terra = new("Terra", 12, 100);
-            Warrior doyum = new("Doyum", 5, 200);
+            Warrior doyum = new("Doyum", 5, 210);
 
             Monster scarecrow = new("Scarecrow", 30, 1);
             Monster giantRat = new("Giant Rat", 30, 3);
