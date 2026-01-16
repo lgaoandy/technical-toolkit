@@ -9,7 +9,7 @@ namespace CombatSystem.Models.Characters
         public virtual int Health { get; set; } = maxHealth;
         public virtual int MaxHealth { get; } = maxHealth;
         public virtual bool IsAlive { get; private set; } = true;
-        public Debuff[] Debuffs { get; set; } = [];
+        public List<Debuff> Debuffs { get; set; } = [];
         protected virtual int BaseDamage { get; } = 1;
         protected virtual string SpecialAbilityName { get; } = "Double Strike";
 

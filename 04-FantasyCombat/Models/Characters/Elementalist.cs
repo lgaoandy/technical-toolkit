@@ -57,19 +57,16 @@ namespace CombatSystem.Models.Characters
                 if (target.Debuffs.Contains(Debuff.FrostBitten))
                 {
                     damageElemental = (int)Math.Ceiling(target.MaxHealth * 0.08);
-                    target.Debuffs.Replace(Debuff.FrostBitten, Debuff.Scorched);
+                    target.Debuffs.Remove(Debuff.FrostBitten);
                     RegenMana(3);
                     Console.WriteLine($"{Name} shatters a frostbitten {target.Name} with fire, dealing bonus elemental {damageElemental} damage and regained 3 mana.");
                 }
+
                 // If enemy is already scorched, enemy becomes immolated
-                else if (target.Debuffs.Contains(Debuff.Scorched))
-                {
-                    target.Debuffs.Replace(Debuff.Scorched, Debuff.Immolated);
-                }
+                if (target.Debuffs.Remove(Debuff.Scorched))
+                    target.Debuffs.Add(Debuff.Immolated);
                 else
-                {
-                    target.Debuffs = target.Debuffs.Append(Debuff.Scorched).ToArray();
-                }
+                    target.Debuffs.Add(Debuff.Scorched);
             }
             else
             {
@@ -77,18 +74,15 @@ namespace CombatSystem.Models.Characters
                 if (target.Debuffs.Contains(Debuff.Immolated))
                 {
                     damageElemental = 20 + (int)Math.Floor(Intelligence * 1.5);
-                    target.Debuffs.Replace(Debuff.Immolated, Debuff.Chilled);
+                    target.Debuffs.Remove(Debuff.Immolated);
                     Console.WriteLine($"{Name} melts an immolated {target.Name} with ice, dealing bonus explosive {damageElemental} damage!");
                 }
+
                 // If enemy is already chilled, upgrades to frostbitten
-                else if (target.Debuffs.Contains(Debuff.Chilled))
-                {
-                    target.Debuffs.Replace(Debuff.Chilled, Debuff.FrostBitten);
-                }
+                if (target.Debuffs.Remove(Debuff.Chilled))
+                    target.Debuffs.Add(Debuff.FrostBitten);
                 else
-                {
-                    target.Debuffs = target.Debuffs.Append(Debuff.Chilled).ToArray();
-                }
+                    target.Debuffs.Add(Debuff.Chilled);
             }
 
             Console.WriteLine($"{Name} attacks {target.Name} for {damageBase} damage!");
@@ -122,6 +116,6 @@ namespace CombatSystem.Models.Characters
             }
             return false;
         }
-        
+
     }
 }

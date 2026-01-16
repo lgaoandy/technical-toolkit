@@ -9,7 +9,7 @@ namespace CombatSystem.Models.Enemies
         public int Health { get; private set; } = maxHealth;
         public int MaxHealth { get; } = maxHealth;
         public bool IsAlive { get; private set; } = true;
-        public Debuff[] Debuffs { get; set; } = [];
+        public List<Debuff> Debuffs { get; set; } = [];
         public int Strength { get; } = strength;
 
         public void Attack(ICombatant target)
@@ -23,14 +23,14 @@ namespace CombatSystem.Models.Enemies
                 if (hitChance < 30)
                 {
                     Console.WriteLine($"{Name} is frostbitten - freezing in place and unable to attack!");
-                    Debuffs = Debuffs.Where(debuff => debuff != Debuff.FrostBitten).ToArray();
+                    Debuffs.Remove(Debuff.FrostBitten);
                     return;
                 }
             }
-            
+
             // Standard attack
             int damage = rnd.Next(1, Strength + 1);
-            Console.WriteLine($"{Name} attacks {target.Name} for {damage} damage!"); 
+            Console.WriteLine($"{Name} attacks {target.Name} for {damage} damage!");
             target.TakeDamage(damage);
         }
 
@@ -54,7 +54,7 @@ namespace CombatSystem.Models.Enemies
                 Console.WriteLine($"{Name} has been slain!");
             }
         }
-        
+
         public void DisplayStatus()
         {
             Console.WriteLine($"{Name}: {Health}/{MaxHealth} HP.");

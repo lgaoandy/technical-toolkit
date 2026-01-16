@@ -8,7 +8,7 @@ namespace CombatSystem.Interfaces
         int Health { get; }
         int MaxHealth { get; }
         bool IsAlive { get; }
-        Debuff[] Debuffs { get; set; }
+        List<Debuff> Debuffs { get; set; }
         void Attack(ICombatant target);
         void TakeDamage(int amount);
         void DisplayStatus();
