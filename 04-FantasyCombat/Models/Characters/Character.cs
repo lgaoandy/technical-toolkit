@@ -37,12 +37,11 @@ namespace CombatSystem.Models.Characters
             Console.WriteLine($"{Name}: {Health}/{MaxHealth} HP");
         }
 
-        public virtual bool SpecialAbility(ICombatant target)
+        public virtual void SpecialAbility(ICombatant target)
         {
             int damage = CalculateAttackDamage();
             target.TakeDamage(damage * 2);
             Console.WriteLine($"{Name} uses {SpecialAbilityName} on {target.Name} for {damage} damage!");
-            return true;
         }
     }
 }

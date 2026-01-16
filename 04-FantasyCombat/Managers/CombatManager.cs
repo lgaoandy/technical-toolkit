@@ -35,31 +35,20 @@ namespace CombatSystem.Managers.CombatManager
             {
                 // Announce every 2 rounds
                 if (round % 2 == 0)
-                {
                     Console.WriteLine($"----- Round {round / 2 + 1} -----");
-                }
 
-                // warriors try to use special ability whenever possible
-                if (attacker is Warrior warrior && warrior.SpecialAbility(defender))
-                {
-
-                }
-                // Elementalists should swap elements when the enemy is immolated or frostbitten
-                else if (
-                    attacker is Elementalist elementalist &&
-                    ((defender.Debuffs.Any(d => d == Debuff.FrostBitten) && elementalist.CurrentElement == Element.Ice) ||
-                    (defender.Debuffs.Any(d => d == Debuff.Immolated) && elementalist.CurrentElement == Element.Fire)) &&
-                    elementalist.SpecialAbility(defender))
-                {
-
-                }
+                // Use special ability if possible
+                if (attacker is Warrior warrior && warrior.CanCast())
+                    warrior.SpecialAbility(defender);
+                else if (attacker is Elementalist elementalist && elementalist.OptimalCast(defender))
+                    elementalist.SpecialAbility(defender);
+                else if (attacker is Monk monk && monk.CanCast())
+                    monk.SpecialAbility(defender);
 
                 // Standard attack
                 else
-                {
                     attacker.Attack(defender);
-                }
-                
+
                 // Announce every exchange
                 if (round % 2 == 1)
                 {

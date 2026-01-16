@@ -12,7 +12,7 @@ namespace CombatSystem.Program
         static void Main()
         {
             Warrior gunnar = new("Gunnar", 3, 135);
-            Monk collin = new("Collin", 5, 140);
+            Monk collin = new("Collin", 5, 75);
             Elementalist terra = new("Terra", 7, 125);
             Warrior doyum = new("Doyum", 6, 190);
 

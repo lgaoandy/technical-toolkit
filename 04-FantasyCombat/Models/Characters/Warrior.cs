@@ -1,4 +1,6 @@
+using System.Drawing;
 using CombatSystem.Interfaces;
+using Pastel;
 
 // Warrior: basic attacks charges fervor, which can be used to release devastating attacks
 namespace CombatSystem.Models.Characters
@@ -34,17 +36,20 @@ namespace CombatSystem.Models.Characters
             return (int)Math.Floor(damage * fervorMult);
         }
 
-        public override bool SpecialAbility(ICombatant target)
+        public override void SpecialAbility(ICombatant target)
         {
-            if (Fervor == MaxFervor)
+            if (CanCast())
             {
                 Fervor = 0;
                 int damage = (BaseDamage + Strength) * 4;
                 target.TakeDamage(damage);
-                Console.WriteLine($"{Name} uses {SpecialAbilityName} - dealing a massive {damage} critical hit!");
-                return true;
+                Console.WriteLine($"{Name} uses {SpecialAbilityName.Pastel(Color.IndianRed)} - dealing a massive {damage} critical hit!");
             }
-            return false;
+        }
+
+        public bool CanCast()
+        {
+            return Fervor == MaxFervor;
         }
     }
 }

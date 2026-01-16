@@ -1,5 +1,8 @@
 using CombatSystem.Interfaces;
 using CombatSystem.Enums;
+using System.Diagnostics;
+using System.Drawing;
+using Pastel;
 
 // Elementalist: switch between ice and fire for optimal damage
 namespace CombatSystem.Models.Characters
@@ -99,9 +102,9 @@ namespace CombatSystem.Models.Characters
         }
 
         // Modify special ability to swap elements
-        public override bool SpecialAbility(ICombatant target)
+        public override void SpecialAbility(ICombatant target)
         {
-            if (Mana >= 8)
+            if (CanCast())
             {
                 Mana -= 8;
                 ManaShield = true;
@@ -111,11 +114,24 @@ namespace CombatSystem.Models.Characters
                     Element.Ice => Element.Fire,
                     _ => CurrentElement
                 };
-                Console.WriteLine($"{Name} uses {SpecialAbilityName} - gaining mana shield and swapping to {CurrentElement}!");
-                return true;
+                Console.WriteLine($"{Name} uses {SpecialAbilityName.Pastel(Color.Blue)} - gaining mana shield and swapping to {CurrentElement}!");
             }
-            return false;
         }
 
+        public bool CanCast()
+        {
+            return Mana >= 8;
+        }
+
+        public bool OptimalCast(ICombatant target)
+        {
+            if (!CanCast())
+                return false;
+            if (target.Debuffs.Contains(Debuff.FrostBitten) && CurrentElement == Element.Ice)
+                return true;
+            if (target.Debuffs.Contains(Debuff.Immolated) && CurrentElement == Element.Fire)
+                return true;
+            return false;
+        }
     }
 }
