@@ -77,7 +77,7 @@ namespace CombatSystem.Models.Characters
 
         public bool CanOptimalCast()
         {
-            return CanCast() && (Health / MaxHealth) < 0.4;
+            return CanCast() && (Health / MaxHealth) < 0.5;
         }
     }
 }
