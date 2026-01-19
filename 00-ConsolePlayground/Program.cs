@@ -13,6 +13,7 @@ using MiniProjects.StringExtraction;
 using MiniProjects.DogDonation;
 using MiniProjects.ContosoPettingZoo;
 using MiniProjects.FoodMinigame;
+using MiniProjects.TryCatchExceptions;
 
 class Program
 {
@@ -38,6 +39,7 @@ class Program
         // DogDonation.RunChallenge();
         // ContosoPettingZoo.PlanAllSchools();
         // ContosoPettingZoo.PlanSchoolVisit("School D", 8);
-        FoodMinigame.Run();
+        // FoodMinigame.Run();
+        TryCatchExceptions.CatchSpecificExceptions();
     }
 }
