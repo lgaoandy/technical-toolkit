@@ -14,6 +14,7 @@ using MiniProjects.DogDonation;
 using MiniProjects.ContosoPettingZoo;
 using MiniProjects.FoodMinigame;
 using MiniProjects.TryCatchExceptions;
+using MiniProjects.CreatingExceptions;
 
 class Program
 {
@@ -40,6 +41,7 @@ class Program
         // ContosoPettingZoo.PlanAllSchools();
         // ContosoPettingZoo.PlanSchoolVisit("School D", 8);
         // FoodMinigame.Run();
-        TryCatchExceptions.CatchSpecificExceptions();
+        // TryCatchExceptions.CatchSpecificExceptions();
+        CreatingExceptions.Run();
     }
 }
