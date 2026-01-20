@@ -16,6 +16,7 @@ using MiniProjects.FoodMinigame;
 using MiniProjects.TryCatchExceptions;
 using MiniProjects.CreatingExceptions;
 using MiniProjects.CashRegister;
+using MiniProjects.SmarterCashRegister;
 
 class Program
 {
@@ -44,6 +45,7 @@ class Program
         // FoodMinigame.Run();
         // TryCatchExceptions.CatchSpecificExceptions();
         // CreatingExceptions.Run();
-        CashRegister.Run();
+        // CashRegister.Run();
+        SmarterCashRegister.ApplyTransactions(100);
     }
 }
