@@ -31,8 +31,8 @@ namespace MiniProjects.TryCatchExceptions
         {
             try
             {
-                string? str = null;
-                int length = str.Length;
+                // string? str = null;
+                // int length = str.Length;
             }
             catch (NullReferenceException ex)
             {
