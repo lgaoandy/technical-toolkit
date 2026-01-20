@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/00-ConsolePlayground/bin/Debug/net10.0/Playground.dll",
             "args": [],
             "cwd": "${workspaceFolder}/00-ConsolePlayground",
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false
         }
     ]
