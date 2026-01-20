@@ -37,6 +37,7 @@ namespace MiniProjects.SmarterCashRegister
                     creditRevenue += cost;
                     decimal fee = Math.Round(cost * CreditInterchangeRate, 2);
                     creditCardFee += fee;
+                    ExchangeCash(cashTill);
                     Console.WriteLine(ex.Message.Pastel(Color.PaleVioletRed));
                     Console.WriteLine($"${cost} paid in credit card instead. Costing {fee:C}.");
                 }
@@ -60,6 +61,33 @@ namespace MiniProjects.SmarterCashRegister
 
             Console.WriteLine("Press any key to continue...".Pastel(Color.DimGray));
             Console.ReadKey();
+        }
+
+        static void ExchangeCash(int[] cashTill)
+        {
+            // Exchange 5 twenties to 10 tens
+            if (cashTill[2] == 0 && cashTill[3] > 5)
+            {
+                cashTill[3] -= 5;
+                cashTill[2] += 10;
+                Console.WriteLine($"Exchanged 5 twenties to 10 tens".Pastel(Color.Gray));
+            }
+
+            // Exchange 5 twenties to 20 fives
+            if (cashTill[1] == 0 && cashTill[3] > 5)
+            {
+                cashTill[3] -= 5;
+                cashTill[1] += 20;
+                Console.WriteLine($"Exchanged 5 twenties to 20 fives".Pastel(Color.Gray));
+            }
+
+            // Exchange 2 twenties to 40 ones
+            if (cashTill[0] < 10 && cashTill[3] > 2)
+            {
+                cashTill[3] -= 2;
+                cashTill[0] += 40;
+                Console.WriteLine($"Exchanged 2 twenties to 40 ones".Pastel(Color.Gray));
+            }
         }
 
         static int[] PayCash(int[] cashTill, int cost, int[] cashPayment)
