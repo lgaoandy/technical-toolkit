@@ -8,6 +8,7 @@ namespace MiniProjects.SmarterCashRegister
     class SmarterCashRegister
     {
         private static int[,] DailyStartingCash { get; } = { { 1, 50 }, { 5, 20 }, { 10, 10 }, { 20, 5 } };
+        private static decimal CreditInterchangeRate { get; } = (decimal)0.035;
 
         public static void ApplyTransactions(int transactions)
         {
@@ -15,7 +16,7 @@ namespace MiniProjects.SmarterCashRegister
             int[] cashTill = LoadStartingTill();
             int transactionRevenue = 0;
             int creditRevenue = 0;
-            int creditTransactionCharge = 0;
+            decimal creditCardFee = 0;
 
             LogTillStatus(cashTill);
 
@@ -33,12 +34,13 @@ namespace MiniProjects.SmarterCashRegister
                 }
                 catch (InvalidOperationException ex)
                 {
-                    Console.WriteLine(ex.Message.Pastel(Color.PaleVioletRed));
-                    Console.WriteLine($"${cost} paid in credit card instead.");
                     creditRevenue += cost;
-                    creditTransactionCharge += 2;
+                    decimal fee = Math.Round(cost * CreditInterchangeRate, 2);
+                    creditCardFee += fee;
+                    Console.WriteLine(ex.Message.Pastel(Color.PaleVioletRed));
+                    Console.WriteLine($"${cost} paid in credit card instead. Costing {fee:C}.");
                 }
-
+                Console.WriteLine();
                 transactionRevenue += cost;
             }
 
@@ -49,7 +51,7 @@ namespace MiniProjects.SmarterCashRegister
 
             Console.WriteLine($"Total Cash Revenue: ${cashRevenue}");
             Console.WriteLine($"Total Credit Revenue: ${creditRevenue}");
-            Console.WriteLine($"Credit Card Transaction Cost: ${creditTransactionCharge}");
+            Console.WriteLine($"Credit Card Transaction Cost: {creditCardFee:C}");
 
             if (cashRevenue + creditRevenue == transactionRevenue)
                 Console.WriteLine("Transaction success!".Pastel(Color.Green) + $" - ${cashRevenue} (Cash) + ${creditRevenue} (Credit) = ${transactionRevenue} (Total Cost)");
