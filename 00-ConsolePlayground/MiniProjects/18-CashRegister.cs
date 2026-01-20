@@ -25,7 +25,7 @@ namespace MiniProjects.CashRegister
         {
 
             string? readResult = null;
-            bool useTestData = true;
+            bool useTestData = false;
 
             Console.Clear();
 
@@ -106,9 +106,7 @@ namespace MiniProjects.CashRegister
             do
             {
                 readResult = Console.ReadLine();
-
             } while (readResult == null);
-
 
             static void LoadTillEachMorning(int[,] registerDailyStartingCash, int[] cashTill)
             {
@@ -117,7 +115,6 @@ namespace MiniProjects.CashRegister
                 cashTill[2] = registerDailyStartingCash[2, 1];
                 cashTill[3] = registerDailyStartingCash[3, 1];
             }
-
 
             static string MakeChange(int cost, int[] cashTill, int twenties, int tens = 0, int fives = 0, int ones = 0)
             {
@@ -187,7 +184,6 @@ namespace MiniProjects.CashRegister
             {
                 return $"The till has {cashTill[3] * 20 + cashTill[2] * 10 + cashTill[1] * 5 + cashTill[0]} dollars";
             }
-
         }
     }
 }

@@ -15,6 +15,7 @@ using MiniProjects.ContosoPettingZoo;
 using MiniProjects.FoodMinigame;
 using MiniProjects.TryCatchExceptions;
 using MiniProjects.CreatingExceptions;
+using MiniProjects.CashRegister;
 
 class Program
 {
@@ -42,6 +43,7 @@ class Program
         // ContosoPettingZoo.PlanSchoolVisit("School D", 8);
         // FoodMinigame.Run();
         // TryCatchExceptions.CatchSpecificExceptions();
-        CreatingExceptions.Run();
+        // CreatingExceptions.Run();
+        CashRegister.Run();
     }
 }
