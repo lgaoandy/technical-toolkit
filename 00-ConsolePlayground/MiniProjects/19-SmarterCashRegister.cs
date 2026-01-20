@@ -26,7 +26,7 @@ namespace MiniProjects.SmarterCashRegister
                 int cost = GenerateTransaction(2, 49);
                 int[] cashPayment = GenerateCashPayments(cost);
 
-                // Check if cash payment is valid
+                // Check if cash payment is valid 
                 try
                 {
                     cashTill = PayCash(cashTill, cost, cashPayment);
