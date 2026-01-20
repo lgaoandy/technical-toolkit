@@ -149,7 +149,7 @@ namespace MiniProjects.CashRegister
 
                 while ((changeNeeded > 4) && (cashTill[1] > 0))
                 {
-                    cashTill[2]--;
+                    cashTill[1]--;
                     changeNeeded -= 5;
                     Console.WriteLine("\t A five");
                 }
