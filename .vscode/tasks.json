@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-playground",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/00-ConsolePlayground/Playground.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
