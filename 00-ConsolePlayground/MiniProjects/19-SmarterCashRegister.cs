@@ -50,6 +50,7 @@ namespace MiniProjects.SmarterCashRegister
             LogTillStatus(cashTill);
             int cashRevenue = CalculateCashValue(cashTill) - CalculateCashValue(LoadStartingTill());
 
+            Console.WriteLine();
             Console.WriteLine($"Total Cash Revenue: ${cashRevenue}");
             Console.WriteLine($"Total Credit Revenue: ${creditRevenue}");
             Console.WriteLine($"Credit Card Transaction Cost: {creditCardFee:C}");
