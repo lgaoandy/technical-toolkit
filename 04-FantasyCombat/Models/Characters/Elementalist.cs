@@ -10,6 +10,8 @@ namespace CombatSystem.Models.Characters
     public class Elementalist(string name = "Elementalist", int intelligence = 3, int maxHealth = 80) : Character
     {
         public override string Name { get; } = name;
+        public override string Class { get; } = "Elementalist";
+        public override string CoreAttribute { get; } = "Intelligence";
         public override int Health { get; set; } = maxHealth;
         public override int MaxHealth { get; } = maxHealth;
         protected override string SpecialAbilityName { get; } = "Elemental Visage";

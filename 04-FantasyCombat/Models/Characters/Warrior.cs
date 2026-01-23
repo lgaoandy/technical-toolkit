@@ -8,6 +8,8 @@ namespace CombatSystem.Models.Characters
     public class Warrior(string name = "Warrior", int strength = 3, int maxHealth = 130) : Character
     {
         public override string Name { get; } = name;
+        public override string Class { get; } = "Warrior";
+        public override string CoreAttribute { get; } = "Strength";
         public override int Health { get; set; } = maxHealth;
         public override int MaxHealth { get; } = maxHealth;
         protected override int BaseDamage { get; } = 2;

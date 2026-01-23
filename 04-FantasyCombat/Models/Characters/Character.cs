@@ -6,6 +6,8 @@ namespace CombatSystem.Models.Characters
     public abstract class Character(string name = "Character", int maxHealth = 100) : ICombatant
     {
         public virtual string Name { get; } = name;
+        public abstract string Class { get; }
+        public abstract string CoreAttribute { get; }
         public virtual int Health { get; set; } = maxHealth;
         public virtual int MaxHealth { get; } = maxHealth;
         public virtual bool IsAlive { get; private set; } = true;

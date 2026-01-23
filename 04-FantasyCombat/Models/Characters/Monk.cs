@@ -7,6 +7,8 @@ namespace CombatSystem.Models.Characters
     public class Monk(string name, int constitution, int maxHealth) : Character
     {
         public override string Name { get; } = name;
+        public override string Class { get; } = "Monk";
+        public override string CoreAttribute { get; } = "Constitution";
         public override int Health { get; set; } = maxHealth;
         public override int MaxHealth { get; } = maxHealth;
         protected override int BaseDamage { get; } = 2;
