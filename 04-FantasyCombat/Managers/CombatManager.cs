@@ -34,12 +34,8 @@ namespace CombatSystem.Managers.CombatManager
                     Console.WriteLine($"----- Round {round / 2 + 1} -----");
 
                 // Use special ability if possible
-                if (attacker is Warrior warrior && warrior.CanCast())
-                    warrior.SpecialAbility(defender);
-                else if (attacker is Elementalist elementalist && elementalist.CanOptimalCast(defender))
-                    elementalist.SpecialAbility(defender);
-                else if (attacker is Monk monk && monk.CanOptimalCast())
-                    monk.SpecialAbility(defender);
+                if (attacker is Character c && c.CanOptimalCast(defender))
+                    c.SpecialAbility(defender);
                 else // Standard attack
                     attacker.Attack(defender);
 

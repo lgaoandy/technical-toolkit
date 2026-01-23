@@ -16,6 +16,7 @@ namespace CombatSystem.Models.Characters
         protected virtual string SpecialAbilityName { get; } = "Double Strike";
 
         // Common Methods
+        public abstract bool CanOptimalCast(ICombatant target);
         protected abstract int CalculateAttackDamage();
 
         public virtual void Attack(ICombatant target)

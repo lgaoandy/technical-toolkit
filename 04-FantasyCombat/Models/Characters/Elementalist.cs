@@ -130,7 +130,7 @@ namespace CombatSystem.Models.Characters
             return Mana >= 8;
         }
 
-        public bool CanOptimalCast(ICombatant target)
+        public override bool CanOptimalCast(ICombatant target)
         {
             if (!CanCast())
                 return false;

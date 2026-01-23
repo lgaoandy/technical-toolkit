@@ -77,7 +77,7 @@ namespace CombatSystem.Models.Characters
             return StaminaMeter >= 10;
         }
 
-        public bool CanOptimalCast()
+        public override bool CanOptimalCast(ICombatant target)
         {
             return CanCast() && (Health / MaxHealth) < 0.5;
         }

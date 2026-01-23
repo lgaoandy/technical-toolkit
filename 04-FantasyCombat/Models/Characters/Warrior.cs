@@ -40,7 +40,7 @@ namespace CombatSystem.Models.Characters
 
         public override void SpecialAbility(ICombatant target)
         {
-            if (CanCast())
+            if (CanOptimalCast(target))
             {
                 Fervor = 0;
                 int damage = (BaseDamage + Strength) * 4;
@@ -49,7 +49,7 @@ namespace CombatSystem.Models.Characters
             }
         }
 
-        public bool CanCast()
+        public override bool CanOptimalCast(ICombatant target)
         {
             return Fervor == MaxFervor;
         }
