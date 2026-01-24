@@ -14,7 +14,7 @@
   <Folder Name="/04-FantasyCombat/">
     <Project Path="04-FantasyCombat/FantasyCombat.csproj" />
   </Folder>
-  <Folder Name="/05-MyWebApp/">
-    <Project Path="05-MyWebApp/MyWebApp.csproj" />
+  <Folder Name="/05-MiddlewareSequencing/">
+    <Project Path="05-MiddlewareSequencing/MiddlewareSequencing.csproj" />
   </Folder>
 </Solution>
