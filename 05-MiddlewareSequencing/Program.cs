@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Primitives;
@@ -79,7 +80,34 @@ app.Use(async (context, next ) =>
     await next();
 });
 
+/*  Response Modifier
+    - Adds a customer header X-Processed to all responses that make it through the pipeline
+*/
+app.Use(async (context, next) =>
+{
+    await next();
+    context.Response.Headers.Append("X-Processed", true);
+});
 
 
+/*  Terminal Handler
+    - /api/hello returns "hello, authenticated user!"
+    - /api/time returns current server time
+*/
+app.Run(async (context) =>
+{
+    string path = context.Request.Path;
+
+    if (path == "/api/hello")
+        await context.Response.WriteAsJsonAsync("{\"message\", \"Hello, authenticated user!\"}"); 
+    else if (path == "/api/time")
+        await context.Response.WriteAsJsonAsync("{\"message\", \"" + DateTime.Now + "\"}"); 
+    else
+    {
+        // We already know by now that path must start with /api/
+        string endpoint = path.Remove(0, "/api/".Length);
+        await context.Response.WriteAsJsonAsync("{\"message\", \"API endpoint: " + endpoint + "\"}"); 
+    }
+});
 
 app.Run();
