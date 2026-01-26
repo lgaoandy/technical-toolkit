@@ -35,7 +35,7 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = 404;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"request path does not start with the required /api/.\"}");
+        await context.Response.WriteAsync("{\"error\": \"path not found\"}");
         return;
     }
         
@@ -54,7 +54,7 @@ app.Use(async (context, next ) =>
     {
         context.Response.StatusCode = 401;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"authentication failed.\"}");
+        await context.Response.WriteAsync("{\"error\": \"unauthorized\"}");
         return;
     }
 
@@ -86,7 +86,7 @@ app.Use(async (context, next ) =>
 app.Use(async (context, next) =>
 {
     await next();
-    context.Response.Headers.Append("X-Processed", true);
+    context.Response.Headers.Append("X-Processed", "true");
 });
 
 
@@ -98,7 +98,7 @@ app.Run(async (context) =>
 {
     string path = context.Request.Path;
 
-    if (path == "/api/hello")
+    if (path == "/api/home")
         await context.Response.WriteAsJsonAsync("{\"message\", \"Hello, authenticated user!\"}"); 
     else if (path == "/api/time")
         await context.Response.WriteAsJsonAsync("{\"message\", \"" + DateTime.Now + "\"}"); 
