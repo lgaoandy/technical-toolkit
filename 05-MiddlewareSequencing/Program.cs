@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.Extensions.Primitives;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -32,11 +34,52 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = 404;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"request path does not start with the required /api/\"}");
+        await context.Response.WriteAsync("{\"error\": \"request path does not start with the required /api/.\"}");
         return;
     }
         
     await next();
 });
+
+/*  Authentication Simulator 
+    - Checks for a query parameter "?token=secret123"
+*/
+app.Use(async (context, next ) =>
+{
+    const string KEYREQUIRED = "token";
+    const string VALREQUIRED = "secret123";
+
+    if (!KeyPairExists(context, KEYREQUIRED, VALREQUIRED))
+    {
+        context.Response.StatusCode = 401;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"error\": \"authentication failed.\"}");
+        return;
+    }
+
+    static bool KeyPairExists(HttpContext context, string key, string value)
+    {
+        IQueryCollection queries = context.Request.Query;
+
+        // Looks for specified key-value pair in query
+        foreach (KeyValuePair<string, StringValues> kvp in queries)
+        {
+            if (kvp.Key == key)
+            {
+                foreach (string? v in kvp.Value)
+                    if (v == value)
+                        return true;
+            }
+        }
+        return false;
+    }
+
+    // Token successful
+    context.Request.Headers.Append("X-User", "AuthenticatedUser");
+    await next();
+});
+
+
+
 
 app.Run();
