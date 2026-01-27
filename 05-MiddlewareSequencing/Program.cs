@@ -105,14 +105,14 @@ app.Run(async (context) =>
     string path = context.Request.Path;
 
     if (path == "/api/hello")
-        await context.Response.WriteAsJsonAsync("{\"message\": \"Hello, authenticated user!\"}");
+        await context.Response.WriteAsJsonAsync(new { message = "Hello, authenticated user!" });
     else if (path == "/api/time")
-        await context.Response.WriteAsJsonAsync("{\"message\": \"" + DateTime.Now + "\"}");
+        await context.Response.WriteAsJsonAsync(new { message = DateTime.Now });
     else
     {
         // We already know by now that path must start with /api/
         string endpoint = path.Remove(0, "/api/".Length);
-        await context.Response.WriteAsJsonAsync("{\"message\": \"API endpoint: " + endpoint + "\"}");
+        await context.Response.WriteAsJsonAsync(new { message = $"API endpoint: {endpoint}" });
     }
 });
 
