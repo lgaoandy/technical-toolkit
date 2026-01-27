@@ -17,4 +17,7 @@
   <Folder Name="/05-MiddlewareSequencing/">
     <Project Path="05-MiddlewareSequencing/MiddlewareSequencing.csproj" />
   </Folder>
+  <Folder Name="/06-DependencyInjection/">
+    <Project Path="06-DependencyInjection/DependencyInjection.csproj" />
+  </Folder>
 </Solution>
