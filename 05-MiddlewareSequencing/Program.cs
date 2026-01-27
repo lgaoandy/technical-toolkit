@@ -1,6 +1,4 @@
-using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Primitives;
 
 var builder = WebApplication.CreateBuilder(args);
