@@ -22,6 +22,22 @@ app.Use(async (context, next) =>
     Console.WriteLine($"Request completed in {milliseconds} ms and {context.Response.StatusCode} Status Code");
 });
 
+/*  Exception Handler (bonus)
+    - Catch any errors and returns 500 response
+*/
+app.Use(async (context, next) => {
+    try
+    {
+        await next();
+    } 
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsJsonAsync(new { error = ex });
+        return;
+    }
+});
+
 /*  Path Filter 
     - Only allows requests to paths starting with /api/
 */
@@ -33,6 +49,21 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = 404;
         await context.Response.WriteAsJsonAsync(new { error = "path not found" });
+        return;
+    }
+
+    await next();
+});
+
+/*  Short Circuit (bonus)
+    - if path is "/api/teapot"
+*/
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/api/teapot")
+    {
+        context.Response.StatusCode = 418;
+        await context.Response.WriteAsJsonAsync(new { teapot = "i'm a teapot" });
         return;
     }
 
@@ -73,21 +104,6 @@ app.Use(async (context, next) =>
 
     // Token successful
     context.Response.Headers.Append("X-User", "AuthenticatedUser");
-    await next();
-});
-
-/*  Short Circuit 
-    - if path is "/api/teapot"
-*/
-app.Use(async (context, next) =>
-{
-    if (context.Request.Path == "/api/teapot")
-    {
-        context.Response.StatusCode = 418;
-        await context.Response.WriteAsJsonAsync(new { teapot = "i'm a teapot" });
-        return;
-    }
-
     await next();
 });
 
