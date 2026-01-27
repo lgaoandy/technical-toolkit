@@ -34,8 +34,7 @@ app.Use(async (context, next) =>
     if (!path.StartsWith("/api/"))
     {
         context.Response.StatusCode = 404;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"path not found\"}");
+        await context.Response.WriteAsJsonAsync(new { error = "path not found" });
         return;
     }
 
@@ -53,8 +52,7 @@ app.Use(async (context, next) =>
     if (!KeyPairExists(context, KEYREQUIRED, VALREQUIRED))
     {
         context.Response.StatusCode = 401;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"unauthorized\"}");
+        await context.Response.WriteAsJsonAsync(new { error = "unauthorized" });
         return;
     }
 
@@ -77,6 +75,21 @@ app.Use(async (context, next) =>
 
     // Token successful
     context.Request.Headers.Append("X-User", "AuthenticatedUser");
+    await next();
+});
+
+/*  Short Circuit 
+    - if path is "/api/teapot"
+*/
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/api/teapot")
+    {
+        context.Response.StatusCode = 418;
+        await context.Response.WriteAsJsonAsync(new { teapot = "i'm a teapot" });
+        return;
+    }
+
     await next();
 });
 
