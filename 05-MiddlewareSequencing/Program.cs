@@ -72,7 +72,7 @@ app.Use(async (context, next) =>
     }
 
     // Token successful
-    context.Request.Headers.Append("X-User", "AuthenticatedUser");
+    context.Response.Headers.Append("X-User", "AuthenticatedUser");
     await next();
 });
 
