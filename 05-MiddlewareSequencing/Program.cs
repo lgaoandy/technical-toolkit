@@ -14,14 +14,14 @@ app.MapGet("/", () => "Hello World!");
 app.Use(async (context, next) =>
 {
     Console.WriteLine($"Request started: {context.Request.Method} {context.Request.Path}");
-    
+
     // Time request
     var stopwatch = Stopwatch.StartNew();
     await next();
     stopwatch.Stop();
-    long milliseconds = stopwatch.ElapsedMilliseconds;    
+    long milliseconds = stopwatch.ElapsedMilliseconds;
 
-    Console.WriteLine($"Request completed in {milliseconds} ms");
+    Console.WriteLine($"Request completed in {milliseconds} ms and {context.Response.StatusCode} Status Code");
 });
 
 /*  Path Filter 
@@ -30,7 +30,7 @@ app.Use(async (context, next) =>
 app.Use(async (context, next) =>
 {
     string path = context.Request.Path;
-    
+
     if (!path.StartsWith("/api/"))
     {
         context.Response.StatusCode = 404;
@@ -38,14 +38,14 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsync("{\"error\": \"path not found\"}");
         return;
     }
-        
+
     await next();
 });
 
 /*  Authentication Simulator 
     - Checks for a query parameter "?token=secret123"
 */
-app.Use(async (context, next ) =>
+app.Use(async (context, next) =>
 {
     const string KEYREQUIRED = "token";
     const string VALREQUIRED = "secret123";
@@ -85,8 +85,14 @@ app.Use(async (context, next ) =>
 */
 app.Use(async (context, next) =>
 {
+    // Use on starting callback to set x-process just before response starts sending back
+    context.Response.OnStarting(() =>
+    {
+        context.Response.Headers.Append("X-Processed", "true");
+        return Task.CompletedTask;
+    });
+
     await next();
-    context.Response.Headers.Append("X-Processed", "true");
 });
 
 
@@ -98,15 +104,15 @@ app.Run(async (context) =>
 {
     string path = context.Request.Path;
 
-    if (path == "/api/home")
-        await context.Response.WriteAsJsonAsync("{\"message\", \"Hello, authenticated user!\"}"); 
+    if (path == "/api/hello")
+        await context.Response.WriteAsJsonAsync("{\"message\": \"Hello, authenticated user!\"}");
     else if (path == "/api/time")
-        await context.Response.WriteAsJsonAsync("{\"message\", \"" + DateTime.Now + "\"}"); 
+        await context.Response.WriteAsJsonAsync("{\"message\": \"" + DateTime.Now + "\"}");
     else
     {
         // We already know by now that path must start with /api/
         string endpoint = path.Remove(0, "/api/".Length);
-        await context.Response.WriteAsJsonAsync("{\"message\", \"API endpoint: " + endpoint + "\"}"); 
+        await context.Response.WriteAsJsonAsync("{\"message\": \"API endpoint: " + endpoint + "\"}");
     }
 });
 
