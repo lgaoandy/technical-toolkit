@@ -29,7 +29,7 @@ public class TenantProvider : ITenantProvider
         // Read from httpContextAccessor
         try
         {
-            _tenantId = _httpContextAccessor.HttpContext.Request.Headers["X-Tenant-ID"];
+            _tenantId = _httpContextAccessor.HttpContext.Request.Headers["X-Tenant-Id"];
 
             if (string.IsNullOrEmpty(_tenantId))
             {
