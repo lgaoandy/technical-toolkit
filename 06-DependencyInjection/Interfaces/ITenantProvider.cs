@@ -1,4 +1,4 @@
-namespace DependencyInjection.interfaces;
+namespace DependencyInjection.Interfaces;
 
 public interface ITenantProvider
 {

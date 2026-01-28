@@ -1,4 +1,5 @@
-using DependencyInjection.interfaces;
+using DependencyInjection.Interfaces;
+
 namespace DependencyInjection.Services;
 
 public class WelcomeService : IWelcomeService
