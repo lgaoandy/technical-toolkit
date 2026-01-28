@@ -1,0 +1,79 @@
+### Variables
+@baseUrl = http://localhost:5195
+@tenantA = tenant-a
+@tenantB = tenant-b
+
+### Test 1: Create task for Tenant A
+POST {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantA}}
+Content-Type: application/json
+
+{
+  "title": "Task A1",
+  "description": "First task for Tenant A",
+  "type": "urgent"
+}
+
+### Test 2: Create task for Tenant B
+POST {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantB}}
+Content-Type: application/json
+
+{
+  "title": "Task B1",
+  "description": "First task for Tenant B",
+  "type": "scheduled"
+}
+
+### Test 3: Get diagnostics for Tenant A
+GET {{baseUrl}}/diagnostics
+X-Tenant-Id: {{tenantA}}
+
+### Test 4: Get diagnostics for Tenant B
+GET {{baseUrl}}/diagnostics
+X-Tenant-Id: {{tenantB}}
+
+### Test 5: Get task 1 as Tenant A
+GET {{baseUrl}}/tasks/1
+X-Tenant-Id: {{tenantA}}
+
+### Test 6: Try to get Tenant A's task as Tenant B (should fail)
+GET {{baseUrl}}/tasks/1
+X-Tenant-Id: {{tenantB}}
+
+### Test 7: Validation test - missing title (should fail)
+POST {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantA}}
+Content-Type: application/json
+
+{
+  "description": "No title provided",
+  "type": "urgent"
+}
+
+### Test 8: Multiple requests for singleton verification
+GET {{baseUrl}}/diagnostics
+X-Tenant-Id: {{tenantA}}
+
+### Test 9: Another request for singleton verification
+GET {{baseUrl}}/diagnostics
+X-Tenant-Id: {{tenantA}}
+
+### Test 10: Cache test - create task
+POST {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantA}}
+Content-Type: application/json
+
+{
+  "title": "Cache Test Task",
+  "description": "Testing cache behavior",
+  "type": "urgent"
+}
+
+### Test 11: Cache test - first get (cache miss)
+GET {{baseUrl}}/tasks/2
+X-Tenant-Id: {{tenantA}}
+
+### Test 12: Cache test - second get (cache hit)
+GET {{baseUrl}}/tasks/2
+X-Tenant-Id: {{tenantA}}
