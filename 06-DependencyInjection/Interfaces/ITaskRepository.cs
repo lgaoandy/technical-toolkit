@@ -6,7 +6,7 @@ public interface ITaskRepository
 {
     Task CreateAsync(TaskItem task);
     Task<TaskItem?> GetByIdAsync(int id);
-    Task<IEnumerable<TaskItem>> GetAllASync();
-    Task UpdateAsync(int id, TaskItem task);
-    Task DeleteAsync(int id);
+    Task<IEnumerable<TaskItem>> GetAllAsync();
+    Task<TaskItem?> UpdateAsync(TaskItem updatedTask);
+    Task<TaskItem?> DeleteAsync(int id);
 }
