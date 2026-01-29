@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -31,10 +32,10 @@ public class TasksController : ControllerBase
         // If invalid, console each error, then throw error
         if (!result.IsValid)
             return BadRequest(result.Errors);
-        
+
         // Save to repository
         int id = await _repository.CreateAsync(task);
-        
+
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);
     }
@@ -43,6 +44,19 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> GetTask(int id)
     {
         // Get task from repository
-        throw new NotImplementedException();
+        TaskItem? task = await _repository.GetByIdAsync(id);
+
+        if (task == null)
+            return NotFound(new { message = $"Task with ID {id} not found" });
+
+        // Return task
+        return Ok(task);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllTasks()
+    {
+        List<TaskItem> tasks = (List<TaskItem>)await _repository.GetAllAsync();
+        return Ok(tasks);
     }
 }
