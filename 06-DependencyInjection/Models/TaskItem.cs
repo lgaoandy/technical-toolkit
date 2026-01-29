@@ -7,4 +7,5 @@ public class TaskItem
     public string Description { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty; // "urgent", "scheduled", "recurring"
     public DateTime CreatedAt { get; set; }
+    public DateTime LastUpdatedAt { get; set; }
 }
