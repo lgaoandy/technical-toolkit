@@ -7,8 +7,10 @@ namespace DependencyInjection.Controllers;
 [Route("diagnostics")]
 public class DiagnosticsController : ControllerBase
 {
+    // Setup Services
     private readonly ITenantProvider _tenantProvider;
 
+    // Constructor
     public DiagnosticsController(ITenantProvider tenantProvider)
     {
         _tenantProvider = tenantProvider;
@@ -21,7 +23,7 @@ public class DiagnosticsController : ControllerBase
 
         return Ok(new
         {
-            tenantId = tenantId,
+            tenantId,
             message = "TenantProvider is working!",
             timestamp = DateTime.UtcNow
         });

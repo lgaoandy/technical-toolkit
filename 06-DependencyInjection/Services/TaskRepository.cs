@@ -26,20 +26,22 @@ public class TaskRepository : ITaskRepository
         }
     }
 
-    public Task CreateAsync(TaskItem task)
+    public Task<int> CreateAsync(TaskItem task)
     {
         // Assign task to next id (simulating database) and add to task item list
+        int id;
         lock (_lock)
         {
             var now = DateTime.UtcNow; // Takes current timestamp
+            id = _nextId++;
 
-            task.Id = _nextId++;
+            task.Id = id;
             task.CreatedAt = now;
             task.LastUpdatedAt = now;
             _taskStore[_currentTenantId].Add(task);
         }
 
-        return Task.CompletedTask;
+        return Task.FromResult(id);
     }
 
     public Task<TaskItem?> GetByIdAsync(int id)
