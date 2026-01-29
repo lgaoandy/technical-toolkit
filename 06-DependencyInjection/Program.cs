@@ -8,6 +8,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITaskValidator, TaskValidator>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 builder.Services.AddControllers();
 

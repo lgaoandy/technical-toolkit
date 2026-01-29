@@ -77,3 +77,11 @@ X-Tenant-Id: {{tenantA}}
 ### Test 12: Cache test - second get (cache hit)
 GET {{baseUrl}}/tasks/2
 X-Tenant-Id: {{tenantA}}
+
+### Test 13: Get all tasks from tenant A
+GET {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantA}}
+
+### Test 14: Get all tasks from tenant B
+GET {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantB}}
