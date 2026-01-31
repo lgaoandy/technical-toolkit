@@ -33,10 +33,10 @@ public class NotificationService : INotificationService
         return Task.CompletedTask;
     }
 
-    public Task NotifyUpdated(TaskItem AfterUpdate)
+    public Task NotifyUpdated(TaskItem task)
     {
         // Generate new notification message
-        Notification notification = new ($"Task '{AfterUpdate}' has been updated for '{_currentTenantId}'");
+        Notification notification = new ($"Task '{task.Title}' has been updated for '{_currentTenantId}'");
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);

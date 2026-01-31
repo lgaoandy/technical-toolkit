@@ -67,20 +67,20 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateTask([FromBody] TaskItem toBeUpdatedTask)
+    public async Task<IActionResult> UpdateTask([FromBody] TaskItem task)
     {
         // Validate to-be-updated task
-        ValidationResult result = _validator.ValidateUpdatedTask(toBeUpdatedTask);
+        ValidationResult result = _validator.ValidateUpdatedTask(task);
 
         // If invalid, throw BadRequest
         if (!result.IsValid)
             return BadRequest(result.Errors);
 
         // Update task
-        await _repository.UpdateAsync(toBeUpdatedTask);
+        await _repository.UpdateAsync(task);
 
         // Send notification
-        await _notification.NotifyCreated(toBeUpdatedTask);
+        await _notification.NotifyUpdated(task);
         return Ok();
     }
 
