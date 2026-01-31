@@ -32,4 +32,17 @@ public class NotificationService : INotificationService
         Console.WriteLine(notification.Message);
         return Task.CompletedTask;
     }
+
+    public Task NotifyUpdated(TaskItem AfterUpdate)
+    {
+        // Generate new notification message
+        Notification notification = new ($"Task '{AfterUpdate}' has been updated for '{_currentTenantId}'");
+
+        // Store notification to tenant
+        _notifications[_currentTenantId].Add(notification);
+
+        // Post notification
+        Console.WriteLine(notification.Message);
+        return Task.CompletedTask;
+    }
 }

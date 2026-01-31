@@ -5,7 +5,7 @@ namespace DependencyInjection.Services;
 
 public class TaskValidator : ITaskValidator
 {
-    public ValidationResult Validate(TaskItem task)
+    public ValidationResult ValidateNewTask(TaskItem task)
     {
         var result = new ValidationResult { IsValid = true };
 
@@ -26,6 +26,19 @@ public class TaskValidator : ITaskValidator
         {
             result.IsValid = false;
             result.Errors.Add("Type is invalid");
+        }
+
+        return result;
+    }
+
+    public ValidationResult ValidateUpdatedTask(TaskItem task)
+    {
+        ValidationResult result = ValidateNewTask(task);
+
+        if (task.Id == 0)
+        {
+            result.IsValid = false;
+            result.Errors.Add("Id is empty");
         }
 
         return result;

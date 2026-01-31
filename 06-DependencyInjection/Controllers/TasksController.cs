@@ -30,7 +30,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> CreateTask([FromBody] TaskItem task)
     {
         // Validate task
-        ValidationResult result = _validator.Validate(task);
+        ValidationResult result = _validator.ValidateNewTask(task);
 
         // If invalid, console each error, then throw error
         if (!result.IsValid)
@@ -66,10 +66,22 @@ public class TasksController : ControllerBase
         return Ok(tasks);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTask([FromBody] TaskItem task)
+    [HttpPut]
+    public async Task<IActionResult> UpdateTask([FromBody] TaskItem toBeUpdatedTask)
     {
-        throw new NotImplementedException();
+        // Validate to-be-updated task
+        ValidationResult result = _validator.ValidateUpdatedTask(toBeUpdatedTask);
+
+        // If invalid, throw BadRequest
+        if (!result.IsValid)
+            return BadRequest(result.Errors);
+
+        // Update task
+        await _repository.UpdateAsync(toBeUpdatedTask);
+
+        // Send notification
+        await _notification.NotifyCreated(toBeUpdatedTask);
+        return Ok();
     }
 
     [HttpDelete("{id}")]
