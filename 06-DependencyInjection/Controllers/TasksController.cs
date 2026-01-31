@@ -1,4 +1,5 @@
 using System.Security.Cryptography.X509Certificates;
+using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ public class TasksController : ControllerBase
         int id = await _repository.CreateAsync(task);
 
         // Send notification
-        await _notification.NotifyCreated(task);
+        await _notification.Notify(Operation.Create, task);
 
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);
@@ -80,7 +81,7 @@ public class TasksController : ControllerBase
         await _repository.UpdateAsync(task);
 
         // Send notification
-        await _notification.NotifyUpdated(task);
+        await _notification.Notify(Operation.Update, task);
         return Ok();
     }
 
@@ -95,7 +96,7 @@ public class TasksController : ControllerBase
             return NotFound(new { message = $"Task with ID {id} not found" });
 
         // Send notification
-        await _notification.NotifyDeleted(task);
+        await _notification.Notify(Operation.Delete, task);
         return Ok();
     }
 }

@@ -1,3 +1,7 @@
+using System.CodeDom.Compiler;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
+using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
 
@@ -20,36 +24,19 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public Task NotifyCreated(TaskItem task)
+    public Task Notify(Operation operation, TaskItem task)
     {
-        // Generate new notification message
-        Notification notification = new ($"Task '{task.Title}' created for '{_currentTenantId}");
+        // Generate message based on operation
+        string message = operation switch
+        {
+            Operation.Create => $"Task '{task.Title}' created for '{_currentTenantId}'",
+            Operation.Update => $"Task '{task.Title}' has been updated for '{_currentTenantId}'",
+            Operation.Delete => $"Task '{task.Title}' has been deleted for '{_currentTenantId}'",
+            _ => throw new InvalidOperationException(),
+        };
 
-        // Store notification to tenant
-        _notifications[_currentTenantId].Add(notification);
-
-        // Post notification
-        Console.WriteLine(notification.Message);
-        return Task.CompletedTask;
-    }
-
-    public Task NotifyUpdated(TaskItem task)
-    {
-        // Generate new notification message
-        Notification notification = new ($"Task '{task.Title}' has been updated for '{_currentTenantId}'");
-
-        // Store notification to tenant
-        _notifications[_currentTenantId].Add(notification);
-
-        // Post notification
-        Console.WriteLine(notification.Message);
-        return Task.CompletedTask;
-    }
-
-    public Task NotifyDeleted(TaskItem task)
-    {
-        // Generate new notification message
-        Notification notification = new($"Task '{task.Title}' has been deleted for '{_currentTenantId}'");
+        // Generate notification
+        Notification notification = new (operation, message);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
