@@ -12,15 +12,18 @@ public class TasksController : ControllerBase
     // Setup services
     private readonly ITaskValidator _validator;
     private readonly ITaskRepository _repository;
+    private readonly INotificationService _notification;
 
     // Constructor
     public TasksController(
         ITaskValidator validator,
-        ITaskRepository repository
+        ITaskRepository repository,
+        INotificationService notification
     )
     {
         _validator = validator;
         _repository = repository;
+        _notification = notification;
     }
 
     [HttpPost]
@@ -35,6 +38,9 @@ public class TasksController : ControllerBase
 
         // Save to repository
         int id = await _repository.CreateAsync(task);
+
+        // Send notification
+        // _notification.SendNotification(task, id);
 
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);
