@@ -97,3 +97,8 @@ Content-Type: application/json
   "description": "First task for Tenant A",
   "type": "urgent"
 }
+
+### Test 16: Delete task 1 from tenant A
+DELETE {{baseUrl}}/tasks/1
+X-Tenant-Id: {{tenantA}}
+

@@ -87,6 +87,15 @@ public class TasksController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
-        throw new NotImplementedException();
+        // Delete task
+        TaskItem? task = await _repository.DeleteAsync(id);
+
+        // If return task is null, return NotFound
+        if (task == null)
+            return NotFound(new { message = $"Task with ID {id} not found" });
+
+        // Send notification
+        await _notification.NotifyDeleted(task);
+        return Ok();
     }
 }
