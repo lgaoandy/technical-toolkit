@@ -65,4 +65,16 @@ public class TasksController : ControllerBase
         List<TaskItem> tasks = (List<TaskItem>)await _repository.GetAllAsync();
         return Ok(tasks);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTask([FromBody] TaskItem task)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTask(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
