@@ -40,7 +40,7 @@ public class TasksController : ControllerBase
         int id = await _repository.CreateAsync(task);
 
         // Send notification
-        // _notification.SendNotification(task, id);
+        await _notification.NotifyCreated(task);
 
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);

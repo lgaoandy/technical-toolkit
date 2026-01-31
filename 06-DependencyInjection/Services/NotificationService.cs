@@ -8,7 +8,7 @@ public class NotificationService : INotificationService
     private static readonly Dictionary<string, List<Notification>> _notifications = new();
     private readonly ITenantProvider _tenantProvider;
     private readonly string _currentTenantId;
-    private static readonly object _lock = new object();
+    private static readonly object _lock = new();
 
     public NotificationService(ITenantProvider tenantProvider)
     {
@@ -20,10 +20,10 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public Task SendNotification(TaskItem task)
+    public Task NotifyCreated(TaskItem task)
     {
         // Generate new notification message
-        Notification notification = new ($"Sending notification: Task '{task.Title}' created for '{_currentTenantId}");
+        Notification notification = new ($"Task '{task.Title}' created for '{_currentTenantId}");
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
