@@ -21,9 +21,7 @@ public class TaskRepository : ITaskRepository
 
         // Ensure the current tenant has a list in the store
         lock (_lock)
-        {
             _taskStore.TryAdd(_currentTenantId, []);
-        }
     }
 
     public Task<int> CreateAsync(TaskItem task)
