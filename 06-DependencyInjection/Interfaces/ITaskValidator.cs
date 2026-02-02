@@ -4,5 +4,6 @@ namespace DependencyInjection.Interfaces;
 
 public interface ITaskValidator
 {
-    ValidationResult Validate(TaskItem task);
+    ValidationResult ValidateNewTask(TaskItem task);
+    ValidationResult ValidateUpdatedTask(TaskItem task);
 }

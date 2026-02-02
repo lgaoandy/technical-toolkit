@@ -85,3 +85,20 @@ X-Tenant-Id: {{tenantA}}
 ### Test 14: Get all tasks from tenant B
 GET {{baseUrl}}/tasks
 X-Tenant-Id: {{tenantB}}
+
+### Test 15: Update task 1 from tenant A
+PUT {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantA}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Task Alpha",
+  "description": "First task for Tenant A",
+  "type": "urgent"
+}
+
+### Test 16: Delete task 1 from tenant A
+DELETE {{baseUrl}}/tasks/1
+X-Tenant-Id: {{tenantA}}
+
