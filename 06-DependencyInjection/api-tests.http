@@ -9,7 +9,7 @@ X-Tenant-Id: {{tenantA}}
 Content-Type: application/json
 
 {
-  "title": "Task A1",
+  "title": "First Task",
   "description": "First task for Tenant A",
   "type": "urgent"
 }
@@ -20,7 +20,7 @@ X-Tenant-Id: {{tenantB}}
 Content-Type: application/json
 
 {
-  "title": "Task B1",
+  "title": "Setup Task for B",
   "description": "First task for Tenant B",
   "type": "scheduled"
 }
