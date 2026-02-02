@@ -1,6 +1,3 @@
-using System.CodeDom.Compiler;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
@@ -29,9 +26,9 @@ public class NotificationService : INotificationService
         // Generate message based on operation
         string message = operation switch
         {
-            Operation.Create => $"Task '{task.Title}' created for '{_currentTenantId}'",
-            Operation.Update => $"Task '{task.Title}' has been updated for '{_currentTenantId}'",
-            Operation.Delete => $"Task '{task.Title}' has been deleted for '{_currentTenantId}'",
+            Operation.CreateTask => $"Task '{task.Title}' created for '{_currentTenantId}'",
+            Operation.UpdateTask=> $"Task '{task.Title}' updated for '{_currentTenantId}'",
+            Operation.DeleteTask => $"Task '{task.Title}' deleted for '{_currentTenantId}'",
             _ => throw new InvalidOperationException(),
         };
 
@@ -42,7 +39,7 @@ public class NotificationService : INotificationService
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
-        Console.WriteLine(notification.Message);
+        Console.WriteLine($"[Notification {notification.Id}]: {notification.Message}");
         return Task.CompletedTask;
     }
 }
