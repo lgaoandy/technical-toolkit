@@ -4,5 +4,7 @@ public enum Operation
 {
     CreateTask,
     UpdateTask,
-    DeleteTask
+    DeleteTask,
+    RetrieveTask,
+    RetrieveTaskGroup
 }

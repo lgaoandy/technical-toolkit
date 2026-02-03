@@ -8,22 +8,22 @@ namespace DependencyInjection.Controllers;
 public class DiagnosticsController : ControllerBase
 {
     // Setup Services
-    private readonly ITenantProvider _tenantProvider;
+    private readonly IAudioLogger _logger;
+    private string _currentTenantId;
 
     // Constructor
-    public DiagnosticsController(ITenantProvider tenantProvider)
+    public DiagnosticsController(IAudioLogger audioLogger, ITenantProvider tenantProvider)
     {
-        _tenantProvider = tenantProvider;
+        _logger = audioLogger;
+        _currentTenantId = tenantProvider.GetTenantId();
     }
 
     [HttpGet]
     public IActionResult GetDiagnostics()
     {
-        var tenantId = _tenantProvider.GetTenantId();
-
         return Ok(new
         {
-            tenantId,
+            tenantId = _currentTenantId,
             message = "TenantProvider is working!",
             timestamp = DateTime.UtcNow
         });
