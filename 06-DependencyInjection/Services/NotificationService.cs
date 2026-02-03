@@ -47,7 +47,7 @@ public class NotificationService : INotificationService
         }
 
         // Generate notification
-        Notification notification = new (id, _currentTenantId, task.Id, message);
+        Notification notification = new (id, _currentTenantId, message);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
