@@ -26,9 +26,9 @@ public class NotificationService : INotificationService
         // Generate message based on operation
         string message = operation switch
         {
-            Operation.CreateTask => $"Task '{task.Title}' created for '{_currentTenantId}'",
-            Operation.UpdateTask=> $"Task '{task.Title}' updated for '{_currentTenantId}'",
-            Operation.DeleteTask => $"Task '{task.Title}' deleted for '{_currentTenantId}'",
+            Operation.CreateTask => $"Task '{task.Title}' created",
+            Operation.UpdateTask=> $"Task '{task.Title}' updated",
+            Operation.DeleteTask => $"Task '{task.Title}' deleted",
             _ => throw new InvalidOperationException(),
         };
 
@@ -50,16 +50,16 @@ public class NotificationService : INotificationService
         }
 
         // Generate notification
-        Notification notification = new (id, operation, message, descriptions);
+        Notification notification = new (id, _currentTenantId, message, descriptions);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
         if (descriptions.Length > 0)
-            Console.WriteLine($"[Notification {notification.Id}]: {notification.Message} - {notification.Description}");
+            Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message} - {notification.Description}");
         else
-            Console.WriteLine($"[Notification {notification.Id}]: {notification.Message}");
+            Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message}");
 
         // Finish
         return Task.CompletedTask;
