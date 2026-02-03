@@ -2,9 +2,20 @@ using DependencyInjection.Enums;
 
 namespace DependencyInjection.Models;
 
-public class Notification(Operation op, string message)
+public class Notification
 {
-    public Operation operation = op;
-    public string Message { get; set; } = message;
-    public DateTime SendAt { get; set; } = DateTime.UtcNow;
+    public string Id = string.Empty;
+    public string TenantId = string.Empty;
+    public string Message { get; set; } = string.Empty;
+    public int TaskId {get; set;}
+    public DateTime Timestamp { get; set; }
+
+    public Notification(string id, string tenantId, int taskId, string message)
+    {
+        Id = id;
+        TenantId = tenantId;
+        TaskId = taskId;
+        Message = message;
+        Timestamp = DateTime.UtcNow;
+    }
 }

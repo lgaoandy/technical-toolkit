@@ -9,7 +9,7 @@ X-Tenant-Id: {{tenantA}}
 Content-Type: application/json
 
 {
-  "title": "Task A1",
+  "title": "First Task",
   "description": "First task for Tenant A",
   "type": "urgent"
 }
@@ -20,7 +20,7 @@ X-Tenant-Id: {{tenantB}}
 Content-Type: application/json
 
 {
-  "title": "Task B1",
+  "title": "Setup Task for B",
   "description": "First task for Tenant B",
   "type": "scheduled"
 }
@@ -98,7 +98,19 @@ Content-Type: application/json
   "type": "urgent"
 }
 
-### Test 16: Delete task 1 from tenant A
+### Test 16: Update task 1 all three parameters from tenant A
+PUT {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantA}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Revised Task Alpha",
+  "description": "Target finish all previous missed tasks",
+  "type": "scheduled"
+}
+
+### Test 17: Delete task 1 from tenant A
 DELETE {{baseUrl}}/tasks/1
 X-Tenant-Id: {{tenantA}}
 

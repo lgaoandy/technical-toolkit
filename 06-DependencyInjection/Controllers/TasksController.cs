@@ -41,7 +41,7 @@ public class TasksController : ControllerBase
         int id = await _repository.CreateAsync(task);
 
         // Send notification
-        await _notification.Notify(Operation.Create, task);
+        await _notification.Notify(Operation.CreateTask, task);
 
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);
@@ -78,10 +78,10 @@ public class TasksController : ControllerBase
             return BadRequest(result.Errors);
 
         // Update task
-        await _repository.UpdateAsync(task);
+        TaskItem oldTask = await _repository.UpdateAsync(task);
 
         // Send notification
-        await _notification.Notify(Operation.Update, task);
+        await _notification.Notify(Operation.UpdateTask, task, oldTask);
         return Ok();
     }
 
@@ -96,7 +96,7 @@ public class TasksController : ControllerBase
             return NotFound(new { message = $"Task with ID {id} not found" });
 
         // Send notification
-        await _notification.Notify(Operation.Delete, task);
+        await _notification.Notify(Operation.DeleteTask, task);
         return Ok();
     }
 }

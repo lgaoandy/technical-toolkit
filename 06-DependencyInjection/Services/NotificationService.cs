@@ -1,6 +1,3 @@
-using System.CodeDom.Compiler;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
@@ -24,25 +21,46 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public Task Notify(Operation operation, TaskItem task)
+    public Task Notify(Operation operation, TaskItem task, TaskItem? oldTask)
     {
         // Generate message based on operation
         string message = operation switch
         {
-            Operation.Create => $"Task '{task.Title}' created for '{_currentTenantId}'",
-            Operation.Update => $"Task '{task.Title}' has been updated for '{_currentTenantId}'",
-            Operation.Delete => $"Task '{task.Title}' has been deleted for '{_currentTenantId}'",
+            Operation.CreateTask => $"Task '{task.Title}' created",
+            Operation.UpdateTask=> $"Task '{task.Title}' updated:",
+            Operation.DeleteTask => $"Task '{task.Title}' deleted",
             _ => throw new InvalidOperationException(),
         };
 
+        // Generate new Guid for notification
+        string id = Guid.NewGuid().ToString()[0..8];
+
+        // Identify changes and generate descriptions
+        if (oldTask is not null)
+        { 
+            if (oldTask.Type != task.Type)
+                message += $"\n\t- Type: '{oldTask.Type}' -> '{task.Type}'";
+            if (oldTask.Title != task.Title)
+                message += $"\n\t- Title: '{oldTask.Title}' -> '{task.Title}'";
+            if (oldTask.Description != task.Description)
+                message += $"\n\t- Description: '{oldTask.Description}' -> '{task.Description}'";
+        }
+
         // Generate notification
-        Notification notification = new (operation, message);
+        Notification notification = new (id, _currentTenantId, task.Id, message);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
-        Console.WriteLine(notification.Message);
+        Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message}");
+
+        // Finish
         return Task.CompletedTask;
+    }
+
+    public Task Notify(Operation operation, TaskItem task)
+    {
+        return Notify(operation, task, null);
     }
 }
