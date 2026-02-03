@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using DependencyInjection.Interfaces;
+using DependencyInjection.Enums;
 
 namespace DependencyInjection.Controllers;
 
@@ -19,12 +20,15 @@ public class DiagnosticsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetDiagnostics()
+    public async Task<IActionResult> GetDiagnostics()
     {
+        Dictionary<Operation, int> entryCount = await _logger.ActivityCount(_currentTenantId);
+
         return Ok(new
         {
             tenantId = _currentTenantId,
             message = "TenantProvider is working!",
+            entryCount,
             timestamp = DateTime.UtcNow
         });
     }

@@ -41,7 +41,7 @@ public class TaskRepository : ITaskRepository
             _taskStore[_currentTenantId].Add(task);
 
             // Log activity
-            _logger.Log(Operation.CreateTask);
+            _logger.Log(_currentTenantId, Operation.CreateTask);
         }
 
         return id;
@@ -56,7 +56,7 @@ public class TaskRepository : ITaskRepository
                 return Task.FromResult<TaskItem?>(task);
 
         // Log activity
-        _logger.Log(Operation.RetrieveTask);
+        _logger.Log(_currentTenantId, Operation.RetrieveTask);
 
         return Task.FromResult<TaskItem?>(null);
     }
@@ -64,7 +64,7 @@ public class TaskRepository : ITaskRepository
     public Task<IEnumerable<TaskItem>> GetAllAsync()
     {
         // Log activity
-        _logger.Log(Operation.RetrieveTaskGroup);
+        _logger.Log(_currentTenantId, Operation.RetrieveTaskGroup);
 
         return Task.FromResult<IEnumerable<TaskItem>>(_taskStore[_currentTenantId]);
     }
@@ -89,7 +89,7 @@ public class TaskRepository : ITaskRepository
                     tasks[i] = toBeUpdatedTask;
 
                     // Log activity
-                    _logger.Log(Operation.UpdateTask);
+                    _logger.Log(_currentTenantId, Operation.UpdateTask);
 
                     return Task.FromResult<TaskItem>(oldTask);
                 }
@@ -116,7 +116,7 @@ public class TaskRepository : ITaskRepository
                     tasks.Remove(task);
 
                     // Log activity
-                    _logger.Log(Operation.DeleteTask);
+                    _logger.Log(_currentTenantId, Operation.DeleteTask);
 
                     return Task.FromResult<TaskItem?>(deletedTask);
                 }
