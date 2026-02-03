@@ -4,6 +4,6 @@ namespace DependencyInjection.Interfaces;
 
 public interface IAudioLogger
 {
-    public Task Log(string tenantId, Operation operation);
-    public Task<Dictionary<Operation, int>> ActivityCount(string tenantId);
+    public Task Log(string tenantId, AuditEvent audioEvent);
+    public Task<Dictionary<AuditEvent, int>> ActivityCount(string tenantId);
 }

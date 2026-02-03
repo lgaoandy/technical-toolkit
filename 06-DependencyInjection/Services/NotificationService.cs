@@ -21,14 +21,14 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public Task Notify(Operation operation, TaskItem task, TaskItem? oldTask)
+    public Task Notify(NotificationType notificationType, TaskItem task, TaskItem? oldTask)
     {
         // Generate message based on operation
-        string message = operation switch
+        string message = notificationType switch
         {
-            Operation.CreateTask => $"Task '{task.Title}' created",
-            Operation.UpdateTask=> $"Task '{task.Title}' updated:",
-            Operation.DeleteTask => $"Task '{task.Title}' deleted",
+            NotificationType.TaskCreated => $"Task '{task.Title}' created",
+            NotificationType.TaskUpdated => $"Task '{task.Title}' updated:",
+            NotificationType.TaskDeleted => $"Task '{task.Title}' deleted",
             _ => throw new InvalidOperationException(),
         };
 
@@ -37,7 +37,7 @@ public class NotificationService : INotificationService
 
         // Identify changes and generate descriptions
         if (oldTask is not null)
-        { 
+        {
             if (oldTask.Type != task.Type)
                 message += $"\n\t- Type: '{oldTask.Type}' -> '{task.Type}'";
             if (oldTask.Title != task.Title)
@@ -47,7 +47,7 @@ public class NotificationService : INotificationService
         }
 
         // Generate notification
-        Notification notification = new (id, _currentTenantId, message);
+        Notification notification = new(id, _currentTenantId, message);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
@@ -59,8 +59,8 @@ public class NotificationService : INotificationService
         return Task.CompletedTask;
     }
 
-    public Task Notify(Operation operation, TaskItem task)
+    public Task Notify(NotificationType notificationType, TaskItem task)
     {
-        return Notify(operation, task, null);
+        return Notify(notificationType, task, null);
     }
 }

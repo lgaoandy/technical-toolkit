@@ -9,20 +9,20 @@ namespace DependencyInjection.Controllers;
 public class DiagnosticsController : ControllerBase
 {
     // Setup Services
-    private readonly IAudioLogger _logger;
+    private readonly IAudioLogger _audioLogger;
     private string _currentTenantId;
 
     // Constructor
     public DiagnosticsController(IAudioLogger audioLogger, ITenantProvider tenantProvider)
     {
-        _logger = audioLogger;
+        _audioLogger = audioLogger;
         _currentTenantId = tenantProvider.GetTenantId();
     }
 
     [HttpGet]
     public async Task<IActionResult> GetDiagnostics()
     {
-        Dictionary<Operation, int> entryCount = await _logger.ActivityCount(_currentTenantId);
+        Dictionary<AuditEvent, int> entryCount = await _audioLogger.ActivityCount(_currentTenantId);
 
         return Ok(new
         {

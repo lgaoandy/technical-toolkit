@@ -12,12 +12,12 @@ public class TaskRepository : ITaskRepository
     private static int _nextId = 1;
     private static readonly object _lock = new object();
 
-    private readonly IAudioLogger _logger;
+    private readonly IAudioLogger _audioLogger;
     private readonly string _currentTenantId;
 
     public TaskRepository(IAudioLogger audioLogger, ITenantProvider tenantProvider)
     {
-        _logger = audioLogger;
+        _audioLogger = audioLogger;
         _currentTenantId = tenantProvider.GetTenantId();
 
         // Ensure the current tenant has a list in the store
@@ -41,7 +41,7 @@ public class TaskRepository : ITaskRepository
             _taskStore[_currentTenantId].Add(task);
 
             // Log activity
-            _logger.Log(_currentTenantId, Operation.CreateTask);
+            _audioLogger.Log(_currentTenantId, AuditEvent.TaskCreated);
         }
 
         return id;
@@ -52,19 +52,24 @@ public class TaskRepository : ITaskRepository
         List<TaskItem> tasks = _taskStore[_currentTenantId];
 
         foreach (TaskItem task in tasks)
+        {
             if (task.Id == id)
+            {
+                // Log activity
+                _audioLogger.Log(_currentTenantId, AuditEvent.TaskRetrieved);
                 return Task.FromResult<TaskItem?>(task);
+            }
+        }
 
         // Log activity
-        _logger.Log(_currentTenantId, Operation.RetrieveTask);
-
+        // _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
         return Task.FromResult<TaskItem?>(null);
     }
 
     public Task<IEnumerable<TaskItem>> GetAllAsync()
     {
         // Log activity
-        _logger.Log(_currentTenantId, Operation.RetrieveTaskGroup);
+        _audioLogger.Log(_currentTenantId, AuditEvent.TaskRetrieved);
 
         return Task.FromResult<IEnumerable<TaskItem>>(_taskStore[_currentTenantId]);
     }
@@ -89,7 +94,7 @@ public class TaskRepository : ITaskRepository
                     tasks[i] = toBeUpdatedTask;
 
                     // Log activity
-                    _logger.Log(_currentTenantId, Operation.UpdateTask);
+                    _audioLogger.Log(_currentTenantId, AuditEvent.TaskUpdated);
 
                     return Task.FromResult<TaskItem>(oldTask);
                 }
@@ -116,7 +121,7 @@ public class TaskRepository : ITaskRepository
                     tasks.Remove(task);
 
                     // Log activity
-                    _logger.Log(_currentTenantId, Operation.DeleteTask);
+                    _audioLogger.Log(_currentTenantId, AuditEvent.TaskDeleted);
 
                     return Task.FromResult<TaskItem?>(deletedTask);
                 }
