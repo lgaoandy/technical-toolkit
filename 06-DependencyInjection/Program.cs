@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add HttpContextAccessor - required for tenantProvider
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSingleton<IAudioLogger, AuditLogger>();
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITaskValidator, TaskValidator>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();

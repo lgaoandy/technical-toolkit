@@ -1,5 +1,6 @@
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
+using DependencyInjection.Enums;
 
 namespace DependencyInjection.Services;
 
@@ -11,35 +12,39 @@ public class TaskRepository : ITaskRepository
     private static int _nextId = 1;
     private static readonly object _lock = new object();
 
-    private readonly ITenantProvider _tenantProvider;
+    private readonly IAudioLogger _audioLogger;
     private readonly string _currentTenantId;
 
-    public TaskRepository(ITenantProvider tenantProvider)
+    public TaskRepository(IAudioLogger audioLogger, ITenantProvider tenantProvider)
     {
-        _tenantProvider = tenantProvider;
-        _currentTenantId = _tenantProvider.GetTenantId();
+        _audioLogger = audioLogger;
+        _currentTenantId = tenantProvider.GetTenantId();
 
         // Ensure the current tenant has a list in the store
         lock (_lock)
             _taskStore.TryAdd(_currentTenantId, []);
     }
 
-    public Task<int> CreateAsync(TaskItem task)
+    public async Task<int> CreateAsync(TaskItem task)
     {
         // Assign task to next id (simulating database) and add to task item list
         int id;
         lock (_lock)
         {
-            var now = DateTime.UtcNow; // Takes current timestamp
+            // Takes current timestamp
+            var now = DateTime.UtcNow;
             id = _nextId++;
 
             task.Id = id;
             task.CreatedAt = now;
             task.LastUpdatedAt = now;
             _taskStore[_currentTenantId].Add(task);
+
+            // Log activity
+            _audioLogger.Log(_currentTenantId, AuditEvent.TaskCreated);
         }
 
-        return Task.FromResult(id);
+        return id;
     }
 
     public Task<TaskItem?> GetByIdAsync(int id)
@@ -47,14 +52,25 @@ public class TaskRepository : ITaskRepository
         List<TaskItem> tasks = _taskStore[_currentTenantId];
 
         foreach (TaskItem task in tasks)
+        {
             if (task.Id == id)
+            {
+                // Log activity
+                _audioLogger.Log(_currentTenantId, AuditEvent.TaskRetrieved);
                 return Task.FromResult<TaskItem?>(task);
+            }
+        }
 
+        // Log activity
+        _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
         return Task.FromResult<TaskItem?>(null);
     }
 
     public Task<IEnumerable<TaskItem>> GetAllAsync()
     {
+        // Log activity
+        _audioLogger.Log(_currentTenantId, AuditEvent.TaskRetrieved);
+
         return Task.FromResult<IEnumerable<TaskItem>>(_taskStore[_currentTenantId]);
     }
 
@@ -76,11 +92,16 @@ public class TaskRepository : ITaskRepository
                     toBeUpdatedTask.LastUpdatedAt = DateTime.UtcNow; // Update lastUpdatedAt
 
                     tasks[i] = toBeUpdatedTask;
+
+                    // Log activity
+                    _audioLogger.Log(_currentTenantId, AuditEvent.TaskUpdated);
+
                     return Task.FromResult<TaskItem>(oldTask);
                 }
             }
 
             // Throws exception not found
+            _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
             throw new KeyNotFoundException($"Task with ID {toBeUpdatedTask.Id} not found");
         }
     }
@@ -99,12 +120,17 @@ public class TaskRepository : ITaskRepository
                 {
                     TaskItem deletedTask = task;
                     tasks.Remove(task);
+
+                    // Log activity
+                    _audioLogger.Log(_currentTenantId, AuditEvent.TaskDeleted);
+
                     return Task.FromResult<TaskItem?>(deletedTask);
                 }
             }
         }
 
         // Throws except if not found
+        _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
         throw new KeyNotFoundException($"Task with ID {id} not found");
     }
 }

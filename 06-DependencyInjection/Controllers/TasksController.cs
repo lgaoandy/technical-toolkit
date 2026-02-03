@@ -31,7 +31,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> CreateTask([FromBody] TaskItem task)
     {
         // Validate task
-        ValidationResult result = _validator.ValidateNewTask(task);
+        ValidationResult result = _validator.ValidateTask(task);
 
         // If invalid, console each error, then throw error
         if (!result.IsValid)
@@ -41,7 +41,7 @@ public class TasksController : ControllerBase
         int id = await _repository.CreateAsync(task);
 
         // Send notification
-        await _notification.Notify(Operation.CreateTask, task);
+        await _notification.Notify(NotificationType.TaskCreated, task);
 
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);
@@ -71,7 +71,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> UpdateTask([FromBody] TaskItem task)
     {
         // Validate to-be-updated task
-        ValidationResult result = _validator.ValidateUpdatedTask(task);
+        ValidationResult result = _validator.ValidateTask(task);
 
         // If invalid, throw BadRequest
         if (!result.IsValid)
@@ -81,7 +81,7 @@ public class TasksController : ControllerBase
         TaskItem oldTask = await _repository.UpdateAsync(task);
 
         // Send notification
-        await _notification.Notify(Operation.UpdateTask, task, oldTask);
+        await _notification.Notify(NotificationType.TaskUpdated, task, oldTask);
         return Ok();
     }
 
@@ -96,7 +96,7 @@ public class TasksController : ControllerBase
             return NotFound(new { message = $"Task with ID {id} not found" });
 
         // Send notification
-        await _notification.Notify(Operation.DeleteTask, task);
+        await _notification.Notify(NotificationType.TaskDeleted, task);
         return Ok();
     }
 }

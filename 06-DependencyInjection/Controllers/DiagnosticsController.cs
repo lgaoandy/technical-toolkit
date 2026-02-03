@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using DependencyInjection.Interfaces;
+using DependencyInjection.Enums;
 
 namespace DependencyInjection.Controllers;
 
@@ -8,23 +9,26 @@ namespace DependencyInjection.Controllers;
 public class DiagnosticsController : ControllerBase
 {
     // Setup Services
-    private readonly ITenantProvider _tenantProvider;
+    private readonly IAudioLogger _audioLogger;
+    private string _currentTenantId;
 
     // Constructor
-    public DiagnosticsController(ITenantProvider tenantProvider)
+    public DiagnosticsController(IAudioLogger audioLogger, ITenantProvider tenantProvider)
     {
-        _tenantProvider = tenantProvider;
+        _audioLogger = audioLogger;
+        _currentTenantId = tenantProvider.GetTenantId();
     }
 
     [HttpGet]
-    public IActionResult GetDiagnostics()
+    public async Task<IActionResult> GetDiagnostics()
     {
-        var tenantId = _tenantProvider.GetTenantId();
+        Dictionary<AuditEvent, int> entryCount = await _audioLogger.GetActivityCount(_currentTenantId);
 
         return Ok(new
         {
-            tenantId,
+            tenantId = _currentTenantId,
             message = "TenantProvider is working!",
+            entryCount,
             timestamp = DateTime.UtcNow
         });
     }
