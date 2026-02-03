@@ -21,7 +21,7 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public Task Notify(Operation operation, TaskItem task)
+    public Task Notify(Operation operation, TaskItem task, TaskItem? oldTask)
     {
         // Generate message based on operation
         string message = operation switch
@@ -32,14 +32,41 @@ public class NotificationService : INotificationService
             _ => throw new InvalidOperationException(),
         };
 
+        // Generate new Guid for notification
+        string id = Guid.NewGuid().ToString()[0..8];
+
+        // Identify changes and generate descriptions
+        List<string> changes = [];
+        string descriptions = string.Empty;
+        if (oldTask is not null)
+        { 
+            if (oldTask.Type != task.Type)
+                changes.Add($"Type '{oldTask.Type}' change to '{task.Type}'");
+            if (oldTask.Title != task.Title)
+                changes.Add($"Title '{oldTask.Title}' change to '{task.Title}'");
+            if (oldTask.Description != task.Description)
+                changes.Add($"Description '{oldTask.Description}' change to '{task.Description}'");
+            descriptions = string.Join(". ", changes);
+        }
+
         // Generate notification
-        Notification notification = new (operation, message);
+        Notification notification = new (id, operation, message, descriptions);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
-        Console.WriteLine($"[Notification {notification.Id}]: {notification.Message}");
+        if (descriptions.Length > 0)
+            Console.WriteLine($"[Notification {notification.Id}]: {notification.Message} - {notification.Description}");
+        else
+            Console.WriteLine($"[Notification {notification.Id}]: {notification.Message}");
+
+        // Finish
         return Task.CompletedTask;
+    }
+
+    public Task Notify(Operation operation, TaskItem task)
+    {
+        return Notify(operation, task, null);
     }
 }

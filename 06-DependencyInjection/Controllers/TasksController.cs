@@ -78,10 +78,10 @@ public class TasksController : ControllerBase
             return BadRequest(result.Errors);
 
         // Update task
-        await _repository.UpdateAsync(task);
+        TaskItem oldTask = await _repository.UpdateAsync(task);
 
         // Send notification
-        await _notification.Notify(Operation.UpdateTask, task);
+        await _notification.Notify(Operation.UpdateTask, task, oldTask);
         return Ok();
     }
 

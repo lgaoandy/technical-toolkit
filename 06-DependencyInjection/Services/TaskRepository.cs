@@ -58,7 +58,7 @@ public class TaskRepository : ITaskRepository
         return Task.FromResult<IEnumerable<TaskItem>>(_taskStore[_currentTenantId]);
     }
 
-    public Task<TaskItem?> UpdateAsync(TaskItem toBeUpdatedTask)
+    public Task<TaskItem> UpdateAsync(TaskItem toBeUpdatedTask)
     {
         lock (_lock)
         {
@@ -76,7 +76,7 @@ public class TaskRepository : ITaskRepository
                     toBeUpdatedTask.LastUpdatedAt = DateTime.UtcNow; // Update lastUpdatedAt
 
                     tasks[i] = toBeUpdatedTask;
-                    return Task.FromResult<TaskItem?>(oldTask);
+                    return Task.FromResult<TaskItem>(oldTask);
                 }
             }
 

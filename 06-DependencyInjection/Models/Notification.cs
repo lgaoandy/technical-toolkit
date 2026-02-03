@@ -10,17 +10,12 @@ public class Notification
     public string Description {get; set;} = string.Empty;
     public DateTime Timestamp { get; set; }
 
-    public Notification(Operation op, string message, string description)
+    public Notification(string id, Operation op, string message, string description)
     {
-        Id = Guid.NewGuid().ToString()[0..8];
+        Id = id;
         Operation = op;
         Message = message;
         Description = description;
         Timestamp = DateTime.UtcNow;
-    }
-
-    public Notification(Operation op, string message) 
-    : this(op, message, string.Empty)
-    {
     }
 }
