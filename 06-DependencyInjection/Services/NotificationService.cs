@@ -27,7 +27,7 @@ public class NotificationService : INotificationService
         string message = operation switch
         {
             Operation.CreateTask => $"Task '{task.Title}' created",
-            Operation.UpdateTask=> $"Task '{task.Title}' updated",
+            Operation.UpdateTask=> $"Task '{task.Title}' updated:",
             Operation.DeleteTask => $"Task '{task.Title}' deleted",
             _ => throw new InvalidOperationException(),
         };
@@ -36,30 +36,24 @@ public class NotificationService : INotificationService
         string id = Guid.NewGuid().ToString()[0..8];
 
         // Identify changes and generate descriptions
-        List<string> changes = [];
-        string descriptions = string.Empty;
         if (oldTask is not null)
         { 
             if (oldTask.Type != task.Type)
-                changes.Add($"Type '{oldTask.Type}' change to '{task.Type}'");
+                message += $"\n\t- Type: '{oldTask.Type}' -> '{task.Type}'";
             if (oldTask.Title != task.Title)
-                changes.Add($"Title '{oldTask.Title}' change to '{task.Title}'");
+                message += $"\n\t- Title: '{oldTask.Title}' -> '{task.Title}'";
             if (oldTask.Description != task.Description)
-                changes.Add($"Description '{oldTask.Description}' change to '{task.Description}'");
-            descriptions = string.Join(". ", changes);
+                message += $"\n\t- Description: '{oldTask.Description}' -> '{task.Description}'";
         }
 
         // Generate notification
-        Notification notification = new (id, _currentTenantId, message, descriptions);
+        Notification notification = new (id, _currentTenantId, task.Id, message);
 
         // Store notification to tenant
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
-        if (descriptions.Length > 0)
-            Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message} - {notification.Description}");
-        else
-            Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message}");
+        Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message}");
 
         // Finish
         return Task.CompletedTask;
