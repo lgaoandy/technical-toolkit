@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
@@ -9,7 +8,7 @@ public class AuditLogger : IAudioLogger
 {
     private static readonly Dictionary<string, List<ActivityEntry>> _auditEntries = new();
 
-    public Task Log(string tenantId, AuditEvent auditEvent)
+    public void Log(string tenantId, AuditEvent auditEvent)
     {
         // Ensure tenant exists as a key
         _auditEntries.TryAdd(tenantId, []);
@@ -19,10 +18,9 @@ public class AuditLogger : IAudioLogger
 
         // Add entry to dictionary organized by tenant
         _auditEntries[tenantId].Add(entry);
-        return Task.CompletedTask;
     }
 
-    public Task<Dictionary<AuditEvent, int>> GetActivityCount(string tenantId)
+    public Dictionary<AuditEvent, int> GetActivityCount(string tenantId)
     {
         // Retrieve entries from tenant
         List<ActivityEntry> entries = _auditEntries[tenantId];
@@ -35,6 +33,6 @@ public class AuditLogger : IAudioLogger
             counter[entry.AuditEvent]++;
         }
 
-        return Task.FromResult(counter);
+        return counter;
     }
 }

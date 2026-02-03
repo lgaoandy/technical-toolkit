@@ -21,7 +21,7 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public Task Notify(NotificationType notificationType, TaskItem task, TaskItem? oldTask)
+    public void Send(NotificationType notificationType, TaskItem task, TaskItem? oldTask = null)
     {
         // Generate message based on operation
         string message = notificationType switch
@@ -54,13 +54,5 @@ public class NotificationService : INotificationService
 
         // Post notification
         Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message}");
-
-        // Finish
-        return Task.CompletedTask;
-    }
-
-    public Task Notify(NotificationType notificationType, TaskItem task)
-    {
-        return Notify(notificationType, task, null);
     }
 }
