@@ -6,4 +6,6 @@ public enum AuditEvent
     TaskUpdated,
     TaskDeleted,
     TaskRetrieved,
+    NotFound,
+    InvalidFormat,
 }

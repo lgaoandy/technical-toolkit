@@ -62,7 +62,7 @@ public class TaskRepository : ITaskRepository
         }
 
         // Log activity
-        // _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
+        _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
         return Task.FromResult<TaskItem?>(null);
     }
 
@@ -101,6 +101,7 @@ public class TaskRepository : ITaskRepository
             }
 
             // Throws exception not found
+            _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
             throw new KeyNotFoundException($"Task with ID {toBeUpdatedTask.Id} not found");
         }
     }
@@ -129,6 +130,7 @@ public class TaskRepository : ITaskRepository
         }
 
         // Throws except if not found
+        _audioLogger.Log(_currentTenantId, AuditEvent.NotFound);
         throw new KeyNotFoundException($"Task with ID {id} not found");
     }
 }

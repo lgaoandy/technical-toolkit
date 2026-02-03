@@ -31,7 +31,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> CreateTask([FromBody] TaskItem task)
     {
         // Validate task
-        ValidationResult result = _validator.ValidateNewTask(task);
+        ValidationResult result = _validator.ValidateTask(task);
 
         // If invalid, console each error, then throw error
         if (!result.IsValid)
@@ -71,7 +71,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> UpdateTask([FromBody] TaskItem task)
     {
         // Validate to-be-updated task
-        ValidationResult result = _validator.ValidateUpdatedTask(task);
+        ValidationResult result = _validator.ValidateTask(task);
 
         // If invalid, throw BadRequest
         if (!result.IsValid)

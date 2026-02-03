@@ -1,3 +1,4 @@
+using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
 
@@ -5,9 +6,19 @@ namespace DependencyInjection.Services;
 
 public class TaskValidator : ITaskValidator
 {
-    public ValidationResult ValidateNewTask(TaskItem task)
+    private readonly IAudioLogger _audioLogger;
+    private readonly string _currentTenantId;
+
+    public TaskValidator(IAudioLogger audioLogger, ITenantProvider tenantProvider)
+    {
+        _audioLogger = audioLogger;
+        _currentTenantId = tenantProvider.GetTenantId();
+    }
+
+    public ValidationResult ValidateTask(TaskItem task)
     {
         var result = new ValidationResult { IsValid = true };
+        List<string> validTypes = ["urgent", "scheduled", "recurring"];
 
         if (string.IsNullOrEmpty(task.Title))
         {
@@ -21,25 +32,15 @@ public class TaskValidator : ITaskValidator
             result.Errors.Add("Description is empty");
         }
 
-        List<string> validTypes = ["urgent", "scheduled", "recurring"];
         if (validTypes.IndexOf(task.Type) < 0)
         {
             result.IsValid = false;
             result.Errors.Add("Type is invalid");
         }
 
-        return result;
-    }
-
-    public ValidationResult ValidateUpdatedTask(TaskItem task)
-    {
-        ValidationResult result = ValidateNewTask(task);
-
-        if (task.Id == 0)
-        {
-            result.IsValid = false;
-            result.Errors.Add("Id is empty");
-        }
+        // If invalid format, log it
+        if (result.IsValid == false)
+            _audioLogger.Log(_currentTenantId, AuditEvent.InvalidFormat);
 
         return result;
     }

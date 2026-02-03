@@ -22,7 +22,7 @@ public class DiagnosticsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDiagnostics()
     {
-        Dictionary<AuditEvent, int> entryCount = await _audioLogger.ActivityCount(_currentTenantId);
+        Dictionary<AuditEvent, int> entryCount = await _audioLogger.GetActivityCount(_currentTenantId);
 
         return Ok(new
         {
