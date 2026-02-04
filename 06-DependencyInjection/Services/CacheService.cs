@@ -19,7 +19,7 @@ public class CacheService : ICacheService
         if (!_cache.Keys.Contains(key))
         {
             _cacheMisses++;
-            throw new ArgumentOutOfRangeException(nameof(key), "Key does not exist in cache"));
+            throw new ArgumentOutOfRangeException(nameof(key), "Key does not exist in cache");
         }
 
         _cacheHits++;
