@@ -5,7 +5,7 @@ namespace DependencyInjection.Services;
 
 public class CacheService : ICacheService
 {
-    private Dictionary<string, object> _cache = new();
+    private readonly Dictionary<string, object> _cache = [];
     private int _cacheHits = 0;
     private int _cacheMisses = 0;
 
@@ -16,14 +16,14 @@ public class CacheService : ICacheService
 
     public T Get<T>(string key)
     {
-        if (!_cache.Keys.Contains(key))
+        if (_cache.TryGetValue(key, out var value))
         {
-            _cacheMisses++;
-            throw new ArgumentOutOfRangeException(nameof(key), "Key does not exist in cache");
+            _cacheHits++;
+            return (T)value;
         }
 
-        _cacheHits++;
-        return (T)_cache[key];
+        _cacheMisses++;
+        throw new ArgumentOutOfRangeException(nameof(key), "Key does not exist in cache");
     }
 
     public bool TryGet<T>(string key, out T? value)

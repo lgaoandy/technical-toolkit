@@ -8,9 +8,9 @@ public class TaskRepository : ITaskRepository
 {
     // Static storage - shared across all instance (simulates database)
     // Key: tenantId, Value: list of tasks for that tenant
-    private static readonly Dictionary<string, List<TaskItem>> _taskStore = new();
+    private static readonly Dictionary<string, List<TaskItem>> _taskStore = [];
     private static int _nextId = 1;
-    private static readonly object _lock = new object();
+    private static readonly Lock _lock = new();
 
     private readonly IAudioLogger _audioLogger;
     private readonly string _currentTenantId;

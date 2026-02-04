@@ -6,10 +6,10 @@ namespace DependencyInjection.Services;
 
 public class NotificationService : INotificationService
 {
-    private static readonly Dictionary<string, List<Notification>> _notifications = new();
+    private static readonly Dictionary<string, List<Notification>> _notifications = [];
     private readonly ITenantProvider _tenantProvider;
     private readonly string _currentTenantId;
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     public NotificationService(ITenantProvider tenantProvider)
     {

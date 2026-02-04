@@ -6,7 +6,7 @@ namespace DependencyInjection.Services;
 
 public class AuditLogger : IAudioLogger
 {
-    private static readonly Dictionary<string, List<ActivityEntry>> _auditEntries = new();
+    private static readonly Dictionary<string, List<ActivityEntry>> _auditEntries = [];
 
     public void Log(string tenantId, AuditEvent auditEvent)
     {
