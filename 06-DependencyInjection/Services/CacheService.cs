@@ -9,6 +9,11 @@ public class CacheService : ICacheService
     private int _cacheHits = 0;
     private int _cacheMisses = 0;
 
+    public string GenKey(string tenantId, int secondaryId)
+    {
+        return $"${tenantId}-${secondaryId}";
+    }
+
     public void Set<T>(string key, T? value)
     {
         _cache[key] = value!;

@@ -11,20 +11,26 @@ namespace DependencyInjection.Controllers;
 public class TasksController : ControllerBase
 {
     // Setup services
+    private readonly ICacheService _cacheService;
     private readonly ITaskValidator _validator;
     private readonly ITaskRepository _repository;
     private readonly INotificationService _notification;
+    private string _currentTenantId;
 
     // Constructor
     public TasksController(
+        ITenantProvider tenantProvider,
         ITaskValidator validator,
         ITaskRepository repository,
-        INotificationService notification
+        INotificationService notification,
+        ICacheService cacheService
     )
     {
         _validator = validator;
         _repository = repository;
         _notification = notification;
+        _cacheService = cacheService;
+        _currentTenantId = tenantProvider.GetTenantId();
     }
 
     [HttpPost]
@@ -50,11 +56,21 @@ public class TasksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask(int id)
     {
-        // Get task from repository
-        TaskItem? task = await _repository.GetByIdAsync(id);
 
+        // Try getting from cache
+        string key = _cacheService.GenKey(_currentTenantId, id);
+
+        // If task not in cache, get task from repository
+        if (!_cacheService.TryGet(key, out object? task))
+        {
+            task = await _repository.GetByIdAsync(id);
+        }
+
+        // If task is null
         if (task == null)
+        {
             return NotFound(new { message = $"Task with ID {id} not found" });
+        }
 
         // Return task
         return Ok(task);
