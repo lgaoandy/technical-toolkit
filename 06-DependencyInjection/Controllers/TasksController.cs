@@ -11,20 +11,26 @@ namespace DependencyInjection.Controllers;
 public class TasksController : ControllerBase
 {
     // Setup services
+    private readonly ICacheService _cacheService;
     private readonly ITaskValidator _validator;
     private readonly ITaskRepository _repository;
     private readonly INotificationService _notification;
+    private string _currentTenantId;
 
     // Constructor
     public TasksController(
+        ITenantProvider tenantProvider,
         ITaskValidator validator,
         ITaskRepository repository,
-        INotificationService notification
+        INotificationService notification,
+        ICacheService cacheService
     )
     {
         _validator = validator;
         _repository = repository;
         _notification = notification;
+        _cacheService = cacheService;
+        _currentTenantId = tenantProvider.GetTenantId();
     }
 
     [HttpPost]
@@ -41,7 +47,7 @@ public class TasksController : ControllerBase
         int id = await _repository.CreateAsync(task);
 
         // Send notification
-        await _notification.Notify(NotificationType.TaskCreated, task);
+        _notification.Send(NotificationType.TaskCreated, task);
 
         // Return created response with the task
         return CreatedAtAction(nameof(GetTask), new { id }, task);
@@ -50,11 +56,21 @@ public class TasksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask(int id)
     {
-        // Get task from repository
-        TaskItem? task = await _repository.GetByIdAsync(id);
 
+        // Try getting from cache
+        string key = _cacheService.GenKey(_currentTenantId, id);
+
+        // If task not in cache, get task from repository
+        if (!_cacheService.TryGet(key, out object? task))
+        {
+            task = await _repository.GetByIdAsync(id);
+        }
+
+        // If task is null, return 
         if (task == null)
+        {
             return NotFound(new { message = $"Task with ID {id} not found" });
+        }
 
         // Return task
         return Ok(task);
@@ -81,7 +97,7 @@ public class TasksController : ControllerBase
         TaskItem oldTask = await _repository.UpdateAsync(task);
 
         // Send notification
-        await _notification.Notify(NotificationType.TaskUpdated, task, oldTask);
+        _notification.Send(NotificationType.TaskUpdated, task, oldTask);
         return Ok();
     }
 
@@ -96,7 +112,7 @@ public class TasksController : ControllerBase
             return NotFound(new { message = $"Task with ID {id} not found" });
 
         // Send notification
-        await _notification.Notify(NotificationType.TaskDeleted, task);
+        _notification.Send(NotificationType.TaskDeleted, task);
         return Ok();
     }
 }
