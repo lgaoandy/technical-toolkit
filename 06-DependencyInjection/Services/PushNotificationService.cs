@@ -2,11 +2,11 @@ using DependencyInjection.Interfaces;
 
 namespace DependencyInjection.Services;
 
-public class EmailNotificationService(ITenantProvider tenantProvider)
+public class PushNotificationService(ITenantProvider tenantProvider)
     : NotificationServiceBase(tenantProvider), INotificationService
 {
     protected override string GetNotificationPrefix()
     {
-        return "Email Notification";
+        return "Push Notification";
     }
 }
