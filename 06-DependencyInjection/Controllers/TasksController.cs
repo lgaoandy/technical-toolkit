@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
@@ -14,21 +13,21 @@ public class TasksController : ControllerBase
     private readonly ICacheService _cacheService;
     private readonly ITaskValidator _validator;
     private readonly ITaskRepository _repository;
-    private readonly INotificationService _notification;
-    private string _currentTenantId;
+    private readonly INotificationServiceFactory _notificationFactory;
+    private readonly string _currentTenantId;
 
     // Constructor
     public TasksController(
         ITenantProvider tenantProvider,
         ITaskValidator validator,
         ITaskRepository repository,
-        INotificationService notification,
+        INotificationServiceFactory notificationFactory,
         ICacheService cacheService
     )
     {
         _validator = validator;
         _repository = repository;
-        _notification = notification;
+        _notificationFactory = notificationFactory;
         _cacheService = cacheService;
         _currentTenantId = tenantProvider.GetTenantId();
     }
@@ -44,19 +43,19 @@ public class TasksController : ControllerBase
             return BadRequest(result.Errors);
 
         // Save to repository
-        int id = await _repository.CreateAsync(task);
+        await _repository.CreateAsync(task);
 
-        // Send notification
-        _notification.Send(NotificationType.TaskCreated, task);
+        // Get correct notification service for this tenant
+        var notificationService = _notificationFactory.GetNotificationService(_currentTenantId);
+        notificationService.Send(TaskOperation.TaskCreated, task);
 
         // Return created response with the task
-        return CreatedAtAction(nameof(GetTask), new { id }, task);
+        return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask(int id)
     {
-
         // Try getting from cache
         string key = _cacheService.GenKey(_currentTenantId, id);
 
@@ -97,7 +96,8 @@ public class TasksController : ControllerBase
         TaskItem oldTask = await _repository.UpdateAsync(task);
 
         // Send notification
-        _notification.Send(NotificationType.TaskUpdated, task, oldTask);
+        var notificationService = _notificationFactory.GetNotificationService(_currentTenantId);
+        notificationService.Send(TaskOperation.TaskUpdated, task, oldTask);
         return Ok();
     }
 
@@ -112,7 +112,8 @@ public class TasksController : ControllerBase
             return NotFound(new { message = $"Task with ID {id} not found" });
 
         // Send notification
-        _notification.Send(NotificationType.TaskDeleted, task);
+        var notificationService = _notificationFactory.GetNotificationService(_currentTenantId);
+        notificationService.Send(TaskOperation.TaskDeleted, task);
         return Ok();
     }
 }

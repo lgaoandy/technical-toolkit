@@ -4,31 +4,32 @@ using DependencyInjection.Models;
 
 namespace DependencyInjection.Services;
 
-public class NotificationService : INotificationService
+public abstract class NotificationServiceBase : INotificationService
 {
     private static readonly Dictionary<string, List<Notification>> _notifications = [];
-    private readonly ITenantProvider _tenantProvider;
     private readonly string _currentTenantId;
     private static readonly Lock _lock = new();
 
-    public NotificationService(ITenantProvider tenantProvider)
+    public NotificationServiceBase(ITenantProvider tenantProvider)
     {
-        _tenantProvider = tenantProvider;
-        _currentTenantId = _tenantProvider.GetTenantId();
+        _currentTenantId = tenantProvider.GetTenantId();
 
         // Ensure the current tenant
         lock (_lock)
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public void Send(NotificationType notificationType, TaskItem task, TaskItem? oldTask = null)
+    // Abstract method - subclasses must implement this
+    protected abstract string GetNotificationPrefix();
+
+    public void Send(TaskOperation operation, TaskItem task, TaskItem? oldTask = null)
     {
         // Generate message based on operation
-        string message = notificationType switch
+        string message = operation switch
         {
-            NotificationType.TaskCreated => $"Task '{task.Title}' created",
-            NotificationType.TaskUpdated => $"Task '{task.Title}' updated:",
-            NotificationType.TaskDeleted => $"Task '{task.Title}' deleted",
+            TaskOperation.TaskCreated => $"Task '{task.Title}' created",
+            TaskOperation.TaskUpdated => $"Task '{task.Title}' updated:",
+            TaskOperation.TaskDeleted => $"Task '{task.Title}' deleted",
             _ => throw new InvalidOperationException(),
         };
 
@@ -53,6 +54,6 @@ public class NotificationService : INotificationService
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
-        Console.WriteLine($"[Notification {notification.Id} for {_currentTenantId}]: {notification.Message}");
+        Console.WriteLine($"[{GetNotificationPrefix()} {notification.Id} for {_currentTenantId}]: {notification.Message}");
     }
 }

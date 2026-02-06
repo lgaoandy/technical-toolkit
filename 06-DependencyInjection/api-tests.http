@@ -2,27 +2,50 @@
 @baseUrl = http://localhost:5195
 @tenantA = tenant-a
 @tenantB = tenant-b
+@tenantC = tenant-c
 
-### Test 1: Create task for Tenant A
+### Test 1a: Create task for Tenant A
 POST {{baseUrl}}/tasks
 X-Tenant-Id: {{tenantA}}
 Content-Type: application/json
 
 {
-  "title": "First Task",
+  "title": "Setup for A",
   "description": "First task for Tenant A",
   "type": "urgent"
 }
 
-### Test 2: Create task for Tenant B
+### Test 1b: Create task for Tenant B
 POST {{baseUrl}}/tasks
 X-Tenant-Id: {{tenantB}}
 Content-Type: application/json
 
 {
-  "title": "Setup Task for B",
+  "title": "Setup for B",
   "description": "First task for Tenant B",
   "type": "scheduled"
+}
+
+### Test 1c: Create task for Tenant C
+POST {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantC}}
+Content-Type: application/json
+
+{
+  "title": "Setup for C",
+  "description": "First task for Tenant C",
+  "type": "scheduled"
+}
+
+### Test 2: Create a task with invalid type (should fail)
+POST {{baseUrl}}/tasks
+X-Tenant-Id: {{tenantC}}
+Content-Type: application/json
+
+{
+  "title": "Task with invalid type",
+  "description": "Task immediate for Tenant A",
+  "type": "immediate"
 }
 
 ### Test 3: Get diagnostics for Tenant A

@@ -10,7 +10,7 @@ public class DiagnosticsController : ControllerBase
 {
     // Setup Services
     private readonly IAudioLogger _audioLogger;
-    private string _currentTenantId;
+    private readonly string _currentTenantId;
 
     // Constructor
     public DiagnosticsController(IAudioLogger audioLogger, ITenantProvider tenantProvider)
@@ -22,7 +22,7 @@ public class DiagnosticsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDiagnostics()
     {
-        Dictionary<AuditEvent, int> entryCount = await _audioLogger.GetActivityCount(_currentTenantId);
+        Dictionary<AuditEvent, int> entryCount = _audioLogger.GetActivityCount(_currentTenantId);
 
         return Ok(new
         {
