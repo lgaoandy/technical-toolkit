@@ -1,6 +1,6 @@
 namespace DependencyInjection.Enums;
 
-public enum NotificationOperation
+public enum TaskOperation
 {
     TaskCreated,
     TaskUpdated,

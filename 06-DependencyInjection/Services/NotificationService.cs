@@ -21,14 +21,14 @@ public class NotificationService : INotificationService
             _notifications.TryAdd(_currentTenantId, []);
     }
 
-    public void Send(NotificationOperation operation, TaskItem task, TaskItem? oldTask = null)
+    public void Send(TaskOperation operation, TaskItem task, TaskItem? oldTask = null)
     {
         // Generate message based on operation
         string message = operation switch
         {
-            NotificationOperation.TaskCreated => $"Task '{task.Title}' created",
-            NotificationOperation.TaskUpdated => $"Task '{task.Title}' updated:",
-            NotificationOperation.TaskDeleted => $"Task '{task.Title}' deleted",
+            TaskOperation.TaskCreated => $"Task '{task.Title}' created",
+            TaskOperation.TaskUpdated => $"Task '{task.Title}' updated:",
+            TaskOperation.TaskDeleted => $"Task '{task.Title}' deleted",
             _ => throw new InvalidOperationException(),
         };
 
