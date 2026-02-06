@@ -4,14 +4,14 @@ using DependencyInjection.Models;
 
 namespace DependencyInjection.Services;
 
-public class NotificationService : INotificationService
+public class EmailNotificationService : INotificationService
 {
     private static readonly Dictionary<string, List<Notification>> _notifications = [];
     private readonly ITenantProvider _tenantProvider;
     private readonly string _currentTenantId;
     private static readonly Lock _lock = new();
 
-    public NotificationService(ITenantProvider tenantProvider)
+    public EmailNotificationService(ITenantProvider tenantProvider)
     {
         _tenantProvider = tenantProvider;
         _currentTenantId = _tenantProvider.GetTenantId();

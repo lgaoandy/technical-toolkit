@@ -1,3 +1,4 @@
+using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Services;
 
@@ -11,7 +12,10 @@ builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITaskValidator, TaskValidator>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddTransient<INotificationService, NotificationService>();
+
+builder.Services.AddKeyedTransient<INotificationService, NotificationService>(NotificationType.Email);
+builder.Services.AddKeyedTransient<INotificationService, NotificationService>(NotificationType.SMS);
+builder.Services.AddKeyedTransient<INotificationService, NotificationService>(NotificationType.Push);
 
 builder.Services.AddControllers();
 
