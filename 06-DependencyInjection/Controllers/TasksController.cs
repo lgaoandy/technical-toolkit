@@ -15,7 +15,7 @@ public class TasksController : ControllerBase
     private readonly ITaskValidator _validator;
     private readonly ITaskRepository _repository;
     private readonly INotificationService _notification;
-    private string _currentTenantId;
+    private readonly string _currentTenantId;
 
     // Constructor
     public TasksController(
@@ -56,7 +56,6 @@ public class TasksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask(int id)
     {
-
         // Try getting from cache
         string key = _cacheService.GenKey(_currentTenantId, id);
 
