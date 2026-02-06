@@ -54,6 +54,6 @@ public abstract class NotificationServiceBase : INotificationService
         _notifications[_currentTenantId].Add(notification);
 
         // Post notification
-        Console.WriteLine($"[${GetNotificationPrefix()} {notification.Id} for {_currentTenantId}]: {notification.Message}");
+        Console.WriteLine($"[{GetNotificationPrefix()} {notification.Id} for {_currentTenantId}]: {notification.Message}");
     }
 }
