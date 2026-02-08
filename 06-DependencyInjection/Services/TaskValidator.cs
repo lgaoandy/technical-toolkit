@@ -18,24 +18,17 @@ public class TaskValidator : ITaskValidator
     public ValidationResult ValidateTask(TaskItem task)
     {
         var result = new ValidationResult { IsValid = true };
-        List<string> validTypes = ["urgent", "scheduled", "recurring"];
 
         if (string.IsNullOrEmpty(task.Title))
         {
             result.IsValid = false;
-            result.Errors.Add("Title is empty");
+            result.Errors.Add("Task title is required");
         }
 
         if (string.IsNullOrEmpty(task.Description))
         {
             result.IsValid = false;
-            result.Errors.Add("Description is empty");
-        }
-
-        if (validTypes.IndexOf(task.Type) < 0)
-        {
-            result.IsValid = false;
-            result.Errors.Add("Type is invalid");
+            result.Errors.Add("Task description is required");
         }
 
         // If invalid format, log it

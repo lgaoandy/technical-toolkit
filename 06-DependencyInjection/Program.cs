@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
@@ -24,7 +25,11 @@ builder.Services.AddKeyedTransient<INotificationService, PushNotificationService
 // Register the factory
 builder.Services.AddScoped<INotificationServiceFactory, NotificationServiceFactory>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    // Add type insensitivity for enums
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 
