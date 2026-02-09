@@ -11,7 +11,7 @@ builder.Services.Configure<TenantNotificationSettings>(builder.Configuration);
 // Add HttpContextAccessor - required for tenantProvider
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddSingleton<IAudioLogger, AuditLogger>();
+builder.Services.AddSingleton<IAuditLogger, AuditLogger>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITaskValidator, TaskValidator>();

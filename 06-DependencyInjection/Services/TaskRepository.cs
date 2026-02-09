@@ -12,10 +12,10 @@ public class TaskRepository : ITaskRepository
     private static int _nextId = 1;
     private static readonly Lock _lock = new();
 
-    private readonly IAudioLogger _audioLogger;
+    private readonly IAuditLogger _audioLogger;
     private readonly string _currentTenantId;
 
-    public TaskRepository(IAudioLogger audioLogger, ITenantProvider tenantProvider)
+    public TaskRepository(IAuditLogger audioLogger, ITenantProvider tenantProvider)
     {
         _audioLogger = audioLogger;
         _currentTenantId = tenantProvider.GetTenantId();
