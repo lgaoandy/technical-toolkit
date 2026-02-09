@@ -25,11 +25,13 @@ builder.Services.AddKeyedTransient<INotificationService, PushNotificationService
 // Register the factory
 builder.Services.AddScoped<INotificationServiceFactory, NotificationServiceFactory>();
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    // Add type insensitivity for enums
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Add type insensitivity for enums
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 var app = builder.Build();
 
