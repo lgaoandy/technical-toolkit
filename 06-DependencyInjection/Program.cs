@@ -29,7 +29,7 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
     {
-        // Add type insensitivity for enums
+        // Allow enum conversion case-insensitive and use string names
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 

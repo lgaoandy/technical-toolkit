@@ -40,7 +40,9 @@ public class TasksController : ControllerBase
 
         // If invalid, console each error, then throw error
         if (!result.IsValid)
+        {
             return BadRequest(result.Errors);
+        }
 
         // Save to repository
         await _repository.CreateAsync(task);
