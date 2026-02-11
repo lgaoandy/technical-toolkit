@@ -10,7 +10,6 @@ namespace DependencyInjection.Controllers;
 public class TasksController : ControllerBase
 {
     // Setup services
-    private readonly ICacheService _cacheService;
     private readonly ITaskValidator _validator;
     private readonly ITaskRepository _repository;
     private readonly INotificationServiceFactory _notificationFactory;
@@ -28,7 +27,6 @@ public class TasksController : ControllerBase
         _validator = validator;
         _repository = repository;
         _notificationFactory = notificationFactory;
-        _cacheService = cacheService;
         _currentTenantId = tenantProvider.GetTenantId();
     }
 
@@ -58,14 +56,8 @@ public class TasksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask(int id)
     {
-        // Try getting from cache
-        string key = _cacheService.GenKey(_currentTenantId, id);
 
-        // If task not in cache, get task from repository
-        if (!_cacheService.TryGet(key, out object? task))
-        {
-            task = await _repository.GetByIdAsync(id);
-        }
+        TaskItem? task = await _repository.GetByIdAsync(id);
 
         // If task is null, return 
         if (task == null)
