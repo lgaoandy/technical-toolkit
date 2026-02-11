@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
@@ -10,11 +11,11 @@ builder.Services.Configure<TenantNotificationSettings>(builder.Configuration);
 // Add HttpContextAccessor - required for tenantProvider
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddSingleton<IAudioLogger, AuditLogger>();
+builder.Services.AddSingleton<IAuditLogger, AuditLogger>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITaskValidator, TaskValidator>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskRepository, CachedTaskRepository>();
 
 // Register notification services with keys
 builder.Services.AddKeyedTransient<INotificationService, EmailNotificationService>(NotificationType.Email);
@@ -24,7 +25,13 @@ builder.Services.AddKeyedTransient<INotificationService, PushNotificationService
 // Register the factory
 builder.Services.AddScoped<INotificationServiceFactory, NotificationServiceFactory>();
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Allow enum conversion case-insensitive and use string names
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 var app = builder.Build();
 

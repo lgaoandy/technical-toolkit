@@ -4,7 +4,7 @@ using DependencyInjection.Models;
 
 namespace DependencyInjection.Services;
 
-public class AuditLogger : IAudioLogger
+public class AuditLogger : IAuditLogger
 {
     private static readonly Dictionary<string, List<ActivityEntry>> _auditEntries = [];
 
