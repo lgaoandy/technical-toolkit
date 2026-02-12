@@ -12,12 +12,10 @@ public class TaskRepository : ITaskRepository
     private static int _nextId = 1;
     private static readonly Lock _lock = new();
 
-    private readonly IAuditLogger _auditLogger;
     private readonly string _currentTenantId;
 
-    public TaskRepository(IAuditLogger auditLogger, ITenantProvider tenantProvider)
+    public TaskRepository( ITenantProvider tenantProvider)
     {
-        _auditLogger = auditLogger;
         _currentTenantId = tenantProvider.GetTenantId();
 
         // Ensure the current tenant has a list in the store
@@ -39,9 +37,6 @@ public class TaskRepository : ITaskRepository
             task.CreatedAt = now;
             task.LastUpdatedAt = now;
             _taskStore[_currentTenantId].Add(task);
-
-            // Log activity
-            _auditLogger.Log(_currentTenantId, AuditEvent.TaskCreated);
         }
 
         return id;
@@ -55,22 +50,15 @@ public class TaskRepository : ITaskRepository
         {
             if (task.Id == id)
             {
-                // Log activity
-                _auditLogger.Log(_currentTenantId, AuditEvent.TaskRetrieved);
                 return Task.FromResult<TaskItem?>(task);
             }
         }
 
-        // Log activity
-        _auditLogger.Log(_currentTenantId, AuditEvent.NotFound);
         return Task.FromResult<TaskItem?>(null);
     }
 
     public Task<IEnumerable<TaskItem>> GetAllAsync()
     {
-        // Log activity
-        _auditLogger.Log(_currentTenantId, AuditEvent.TaskRetrieved);
-
         return Task.FromResult<IEnumerable<TaskItem>>(_taskStore[_currentTenantId]);
     }
 
@@ -93,15 +81,9 @@ public class TaskRepository : ITaskRepository
 
                     tasks[i] = toBeUpdatedTask;
 
-                    // Log activity
-                    _auditLogger.Log(_currentTenantId, AuditEvent.TaskUpdated);
-
                     return Task.FromResult<TaskItem>(oldTask);
                 }
             }
-
-            // Throws exception not found
-            _auditLogger.Log(_currentTenantId, AuditEvent.NotFound);
             throw new KeyNotFoundException($"Task with ID {toBeUpdatedTask.Id} not found");
         }
     }
@@ -121,16 +103,11 @@ public class TaskRepository : ITaskRepository
                     TaskItem deletedTask = task;
                     tasks.Remove(task);
 
-                    // Log activity
-                    _auditLogger.Log(_currentTenantId, AuditEvent.TaskDeleted);
-
                     return Task.FromResult<TaskItem?>(deletedTask);
                 }
             }
         }
 
-        // Throws except if not found
-        _auditLogger.Log(_currentTenantId, AuditEvent.NotFound);
         throw new KeyNotFoundException($"Task with ID {id} not found");
     }
 }

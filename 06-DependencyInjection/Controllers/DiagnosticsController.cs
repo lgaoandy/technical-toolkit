@@ -9,11 +9,11 @@ namespace DependencyInjection.Controllers;
 public class DiagnosticsController : ControllerBase
 {
     // Setup Services
-    private readonly IAudioLogger _audioLogger;
+    private readonly IAuditLogger _audioLogger;
     private readonly string _currentTenantId;
 
     // Constructor
-    public DiagnosticsController(IAudioLogger audioLogger, ITenantProvider tenantProvider)
+    public DiagnosticsController(IAuditLogger audioLogger, ITenantProvider tenantProvider)
     {
         _audioLogger = audioLogger;
         _currentTenantId = tenantProvider.GetTenantId();

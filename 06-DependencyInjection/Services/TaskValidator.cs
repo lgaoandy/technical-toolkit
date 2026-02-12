@@ -6,19 +6,16 @@ namespace DependencyInjection.Services;
 
 public class TaskValidator : ITaskValidator
 {
-    private readonly IAudioLogger _audioLogger;
-    private readonly string _currentTenantId;
+    private readonly string _tenantId;
 
-    public TaskValidator(IAudioLogger audioLogger, ITenantProvider tenantProvider)
+    public TaskValidator(ITenantProvider tenantProvider)
     {
-        _audioLogger = audioLogger;
-        _currentTenantId = tenantProvider.GetTenantId();
+        _tenantId = tenantProvider.GetTenantId();
     }
 
     public ValidationResult ValidateTask(TaskItem task)
     {
         var result = new ValidationResult { IsValid = true };
-
         if (string.IsNullOrEmpty(task.Title))
         {
             result.IsValid = false;
@@ -30,11 +27,6 @@ public class TaskValidator : ITaskValidator
             result.IsValid = false;
             result.Errors.Add("Task description is required");
         }
-
-        // If invalid format, log it
-        if (result.IsValid == false)
-            _audioLogger.Log(_currentTenantId, AuditEvent.InvalidFormat);
-
         return result;
     }
 }

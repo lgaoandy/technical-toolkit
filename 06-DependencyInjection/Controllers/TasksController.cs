@@ -11,23 +11,25 @@ public class TasksController : ControllerBase
 {
     // Setup services
     private readonly ITaskValidator _validator;
-    private readonly ITaskRepository _repository;
+    private readonly ITaskRepository _cachedRepository;
+    private readonly IAuditLogger _auditLogger;
     private readonly INotificationServiceFactory _notificationFactory;
-    private readonly string _currentTenantId;
+    private readonly string _tenantId;
 
     // Constructor
     public TasksController(
         ITenantProvider tenantProvider,
         ITaskValidator validator,
-        ITaskRepository repository,
-        INotificationServiceFactory notificationFactory,
-        ICacheService cacheService
+        IAuditLogger auditLogger,
+        ITaskRepository cachedRepository,
+        INotificationServiceFactory notificationFactory
     )
     {
         _validator = validator;
-        _repository = repository;
+        _cachedRepository = cachedRepository;
+        _auditLogger = auditLogger;
         _notificationFactory = notificationFactory;
-        _currentTenantId = tenantProvider.GetTenantId();
+        _tenantId = tenantProvider.GetTenantId();
     }
 
     [HttpPost]
@@ -39,14 +41,18 @@ public class TasksController : ControllerBase
         // If invalid, console each error, then throw error
         if (!result.IsValid)
         {
+            _auditLogger.Log(_tenantId, AuditEvent.InvalidFormat);
             return BadRequest(result.Errors);
         }
 
         // Save to repository
-        await _repository.CreateAsync(task);
+        await _cachedRepository.CreateAsync(task);
+
+        // Log task created
+        _auditLogger.Log(_tenantId, AuditEvent.TaskCreated);
 
         // Get correct notification service for this tenant
-        var notificationService = _notificationFactory.GetNotificationService(_currentTenantId);
+        var notificationService = _notificationFactory.GetNotificationService(_tenantId);
         notificationService.Send(TaskOperation.TaskCreated, task);
 
         // Return created response with the task
@@ -56,57 +62,60 @@ public class TasksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask(int id)
     {
+        TaskItem? task = await _cachedRepository.GetByIdAsync(id);
 
-        TaskItem? task = await _repository.GetByIdAsync(id);
-
-        // If task is null, return 
-        if (task == null)
+        if (task == null) // If task is null, return NotFound
         {
+            _auditLogger.Log(_tenantId, AuditEvent.NotFound);
             return NotFound(new { message = $"Task with ID {id} not found" });
         }
-
-        // Return task
+        _auditLogger.Log(_tenantId, AuditEvent.TaskRetrieved);
         return Ok(task);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllTasks()
     {
-        List<TaskItem> tasks = (List<TaskItem>)await _repository.GetAllAsync();
+        List<TaskItem> tasks = (List<TaskItem>)await _cachedRepository.GetAllAsync();
+        _auditLogger.Log(_tenantId, AuditEvent.TaskGroupRetrieved);
         return Ok(tasks);
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateTask([FromBody] TaskItem task)
     {
-        // Validate to-be-updated task
         ValidationResult result = _validator.ValidateTask(task);
 
-        // If invalid, throw BadRequest
         if (!result.IsValid)
+        {
+            _auditLogger.Log(_tenantId, AuditEvent.InvalidFormat);
             return BadRequest(result.Errors);
+        }
 
         // Update task
-        TaskItem oldTask = await _repository.UpdateAsync(task);
+        TaskItem outdatedTask = await _cachedRepository.UpdateAsync(task);
+        _auditLogger.Log(_tenantId, AuditEvent.TaskUpdated);
 
         // Send notification
-        var notificationService = _notificationFactory.GetNotificationService(_currentTenantId);
-        notificationService.Send(TaskOperation.TaskUpdated, task, oldTask);
+        var notificationService = _notificationFactory.GetNotificationService(_tenantId);
+        notificationService.Send(TaskOperation.TaskUpdated, task, outdatedTask);
+
         return Ok();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
-        // Delete task
-        TaskItem? task = await _repository.DeleteAsync(id);
+        TaskItem? task = await _cachedRepository.DeleteAsync(id);
 
-        // If return task is null, return NotFound
         if (task == null)
+        {
+            _auditLogger.Log(_tenantId, AuditEvent.NotFound);   
             return NotFound(new { message = $"Task with ID {id} not found" });
+        }
 
         // Send notification
-        var notificationService = _notificationFactory.GetNotificationService(_currentTenantId);
+        var notificationService = _notificationFactory.GetNotificationService(_tenantId);
         notificationService.Send(TaskOperation.TaskDeleted, task);
         return Ok();
     }
