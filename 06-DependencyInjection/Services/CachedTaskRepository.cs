@@ -6,12 +6,12 @@ namespace DependencyInjection.Services;
 
 public class CachedTaskRepository : ITaskRepository
 {
-    private readonly ITaskRepository _innerRepository;
+    private readonly TaskRepository _innerRepository;
     private readonly ICacheService _cache;
     private readonly string _tenantId;
 
     public CachedTaskRepository(
-        ITaskRepository innerRepository,
+        TaskRepository innerRepository,
         ICacheService cache,
         ITenantProvider tenantProvider
     )

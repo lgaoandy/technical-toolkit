@@ -13,8 +13,11 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IAuditLogger, AuditLogger>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
+
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddScoped<ITaskValidator, TaskValidator>();
+
+builder.Services.AddScoped<TaskRepository>();
 builder.Services.AddScoped<ITaskRepository, CachedTaskRepository>();
 
 // Register notification services with keys

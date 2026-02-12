@@ -20,7 +20,7 @@ public class AuditLogger : IAuditLogger
         _auditEntries[tenantId].Add(entry);
     }
 
-    public Dictionary<AuditEvent, int> GetActivityCount(string tenantId)
+    public Dictionary<AuditEvent, int> GetTotalOperations(string tenantId)
     {
         // Retrieve entries from tenant
         List<ActivityEntry> entries = _auditEntries[tenantId];

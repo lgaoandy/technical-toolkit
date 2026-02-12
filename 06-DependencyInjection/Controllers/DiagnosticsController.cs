@@ -9,26 +9,29 @@ namespace DependencyInjection.Controllers;
 public class DiagnosticsController : ControllerBase
 {
     // Setup Services
-    private readonly IAudioLogger _audioLogger;
-    private readonly string _currentTenantId;
+    private readonly IAuditLogger _audioLogger;
+    private readonly ICacheService _cache;
+    private readonly string _tenantId;
 
     // Constructor
-    public DiagnosticsController(IAudioLogger audioLogger, ITenantProvider tenantProvider)
+    public DiagnosticsController(IAuditLogger audioLogger, ICacheService cacheService, ITenantProvider tenantProvider)
     {
         _audioLogger = audioLogger;
-        _currentTenantId = tenantProvider.GetTenantId();
+        _cache = cacheService;
+        _tenantId = tenantProvider.GetTenantId();
     }
 
     [HttpGet]
     public async Task<IActionResult> GetDiagnostics()
     {
-        Dictionary<AuditEvent, int> entryCount = _audioLogger.GetActivityCount(_currentTenantId);
-
         return Ok(new
         {
-            tenantId = _currentTenantId,
-            message = "TenantProvider is working!",
-            entryCount,
+            tenantId = _tenantId,
+            totalAuditOperations = _audioLogger.GetTotalOperations(_tenantId),
+            cacheStatistics = new {
+                hits = _cache.GetCacheHits(),
+                misses = _cache.GetCacheMisses()
+            },
             timestamp = DateTime.UtcNow
         });
     }
