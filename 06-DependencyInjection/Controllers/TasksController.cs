@@ -41,7 +41,7 @@ public class TasksController : ControllerBase
         // If invalid, console each error, then throw error
         if (!result.IsValid)
         {
-            _auditLogger.Log(_tenantId, AuditEvent.InvalidFormat);
+            _auditLogger.Log(AuditEvent.InvalidFormat);
             return BadRequest(result.Errors);
         }
 
@@ -49,7 +49,7 @@ public class TasksController : ControllerBase
         await _cachedRepository.CreateAsync(task);
 
         // Log task created
-        _auditLogger.Log(_tenantId, AuditEvent.TaskCreated);
+        _auditLogger.Log(AuditEvent.TaskCreated);
 
         // Get correct notification service for this tenant
         var notificationService = _notificationFactory.GetNotificationService(_tenantId);
@@ -66,10 +66,10 @@ public class TasksController : ControllerBase
 
         if (task == null) // If task is null, return NotFound
         {
-            _auditLogger.Log(_tenantId, AuditEvent.NotFound);
+            _auditLogger.Log(AuditEvent.NotFound);
             return NotFound(new { message = $"Task with ID {id} not found" });
         }
-        _auditLogger.Log(_tenantId, AuditEvent.TaskRetrieved);
+        _auditLogger.Log(AuditEvent.TaskRetrieved);
         return Ok(task);
     }
 
@@ -77,7 +77,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> GetAllTasks()
     {
         List<TaskItem> tasks = (List<TaskItem>)await _cachedRepository.GetAllAsync();
-        _auditLogger.Log(_tenantId, AuditEvent.TaskGroupRetrieved);
+        _auditLogger.Log(AuditEvent.TaskGroupRetrieved);
         return Ok(tasks);
     }
 
@@ -88,13 +88,13 @@ public class TasksController : ControllerBase
 
         if (!result.IsValid)
         {
-            _auditLogger.Log(_tenantId, AuditEvent.InvalidFormat);
+            _auditLogger.Log(AuditEvent.InvalidFormat);
             return BadRequest(result.Errors);
         }
 
         // Update task
         TaskItem outdatedTask = await _cachedRepository.UpdateAsync(task);
-        _auditLogger.Log(_tenantId, AuditEvent.TaskUpdated);
+        _auditLogger.Log(AuditEvent.TaskUpdated);
 
         // Send notification
         var notificationService = _notificationFactory.GetNotificationService(_tenantId);
@@ -110,7 +110,7 @@ public class TasksController : ControllerBase
 
         if (task == null)
         {
-            _auditLogger.Log(_tenantId, AuditEvent.NotFound);   
+            _auditLogger.Log(AuditEvent.NotFound);
             return NotFound(new { message = $"Task with ID {id} not found" });
         }
 

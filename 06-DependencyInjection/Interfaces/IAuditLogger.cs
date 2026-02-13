@@ -4,6 +4,6 @@ namespace DependencyInjection.Interfaces;
 
 public interface IAuditLogger
 {
-    public void Log(string tenantId, AuditEvent audioEvent);
+    public void Log(AuditEvent audioEvent);
     public Dictionary<AuditEvent, int> GetTotalOperations(string tenantId);
 }
