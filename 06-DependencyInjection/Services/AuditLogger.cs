@@ -10,7 +10,9 @@ public class AuditLogger : IAuditLogger
     private static readonly Dictionary<string, List<AuditLogEntry>> _logs = [];
     private readonly string _tenantId;
     private readonly AuditLoggerSettings _settings;
+    private readonly Lock _lock = new();
 
+    // Constructor
     public AuditLogger(IOptions<AuditLoggerSettings> options, ITenantProvider tenantProvider)
     {
         _settings = options.Value;
@@ -19,14 +21,21 @@ public class AuditLogger : IAuditLogger
 
     public void Log(AuditEvent auditEvent)
     {
-        // Ensure tenant exists as a key
-        _logs.TryAdd(_tenantId, []);
+        lock (_lock)
+        {
+            // Ensure tenant exists as a key
+            _logs.TryAdd(_tenantId, []);
 
-        // Create new entry
-        AuditLogEntry entry = new(_tenantId, auditEvent);
+            // If logs of current tenant exceeds max entries, remove the first entry
+            if (_logs[_tenantId].Count > _settings.MaxLogEntries)
+            {
+                _logs[_tenantId].RemoveAt(0);
+            }
 
-        // Add entry to dictionary organized by tenant
-        _logs[_tenantId].Add(entry);
+            // Create new entry
+            AuditLogEntry entry = new(_tenantId, auditEvent);
+            _logs[_tenantId].Add(entry);
+        }
     }
 
     public Dictionary<AuditEvent, int> GetTotalOperations(string tenantId)
