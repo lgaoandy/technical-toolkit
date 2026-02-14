@@ -2,9 +2,10 @@ using DependencyInjection.Enums;
 
 namespace DependencyInjection.Models;
 
-public class AuditLogEntry(string tenantId, AuditEvent auditEvent)
+public class AuditLogEntry()
 {
-    public string TenantId { get; } = tenantId;
-    public AuditEvent AuditEvent { get; } = auditEvent;
-    public DateTime Timestamp { get; } = DateTime.UtcNow;
+    public required string TenantId { get; init; }
+    public required AuditEvent AuditEvent { get; init; }
+    public required string Description { get; init; }
+    public required DateTime Timestamp { get; init; }
 }

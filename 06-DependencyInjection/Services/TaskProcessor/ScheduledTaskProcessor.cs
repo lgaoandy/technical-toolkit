@@ -4,23 +4,15 @@ using DependencyInjection.Models;
 
 namespace DependencyInjection.Services;
 
-public class ScheduledTaskProcessor : ITaskProcessor
+public class ScheduledTaskProcessor(IAuditLogger auditLogger) : ITaskProcessor
 {
-    private readonly IAuditLogger _logger;
-    private readonly ITenantProvider _tenantProvider;
-
-    public ScheduledTaskProcessor(IAuditLogger auditLogger, ITenantProvider tenantProvider)
-    {
-        _logger = auditLogger;
-        _tenantProvider = tenantProvider;
-    }
+    private readonly IAuditLogger _logger = auditLogger;
 
     public void Process(TaskItem task)
     {
-        string tenantId = _tenantProvider.GetTenantId();
-
-        Console.WriteLine($"SCHEDULE: Processing task '{task.Title}' queued for execution");
-        _logger.Log(tenantId, AuditEvent.TaskScheduled);
+        string description = $"SCHEDULE: Processing task '{task.Title}' queued for execution";
+        Console.WriteLine(description);
+        _logger.Log(AuditEvent.TaskScheduled, description);
     }
 
     public TaskType GetProcessorType() => TaskType.Scheduled;

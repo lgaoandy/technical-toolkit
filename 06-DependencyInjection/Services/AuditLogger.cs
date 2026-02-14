@@ -19,7 +19,7 @@ public class AuditLogger : IAuditLogger
         _tenantId = tenantProvider.GetTenantId();
     }
 
-    public void Log(AuditEvent auditEvent)
+    public void Log(AuditEvent auditEvent, string description)
     {
         lock (_lock)
         {
@@ -33,7 +33,13 @@ public class AuditLogger : IAuditLogger
             }
 
             // Create new entry
-            AuditLogEntry entry = new(_tenantId, auditEvent);
+            var entry = new AuditLogEntry{
+                TenantId = _tenantId,
+                AuditEvent = auditEvent,
+                Description = description,
+                Timestamp = DateTime.UtcNow
+            };
+
             _logs[_tenantId].Add(entry);
         }
     }

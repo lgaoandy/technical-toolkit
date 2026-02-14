@@ -41,7 +41,7 @@ public class TasksController : ControllerBase
         // If invalid, console each error, then throw error
         if (!result.IsValid)
         {
-            _auditLogger.Log(AuditEvent.InvalidFormat);
+            _auditLogger.Log(AuditEvent.InvalidFormat, "Task validation failed: " + string.Join(", ", result.Errors));
             return BadRequest(result.Errors);
         }
 
@@ -49,7 +49,7 @@ public class TasksController : ControllerBase
         await _cachedRepository.CreateAsync(task);
 
         // Log task created
-        _auditLogger.Log(AuditEvent.TaskCreated);
+        _auditLogger.Log(AuditEvent.TaskCreated, $"Task with ID {task.Id} created");
 
         // Get correct notification service for this tenant
         var notificationService = _notificationFactory.GetNotificationService(_tenantId);
@@ -66,10 +66,10 @@ public class TasksController : ControllerBase
 
         if (task == null) // If task is null, return NotFound
         {
-            _auditLogger.Log(AuditEvent.NotFound);
+            _auditLogger.Log(AuditEvent.NotFound, $"Task with ID {id} not found");
             return NotFound(new { message = $"Task with ID {id} not found" });
         }
-        _auditLogger.Log(AuditEvent.TaskRetrieved);
+        _auditLogger.Log(AuditEvent.TaskRetrieved, $"Task with ID {id} retrieved"   );
         return Ok(task);
     }
 
@@ -77,7 +77,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> GetAllTasks()
     {
         List<TaskItem> tasks = (List<TaskItem>)await _cachedRepository.GetAllAsync();
-        _auditLogger.Log(AuditEvent.TaskGroupRetrieved);
+        _auditLogger.Log(AuditEvent.TaskGroupRetrieved, $"Retrieved {tasks.Count} tasks");
         return Ok(tasks);
     }
 
@@ -88,13 +88,13 @@ public class TasksController : ControllerBase
 
         if (!result.IsValid)
         {
-            _auditLogger.Log(AuditEvent.InvalidFormat);
+            _auditLogger.Log(AuditEvent.InvalidFormat, "Task validation failed: " + string.Join(", ", result.Errors));
             return BadRequest(result.Errors);
         }
 
         // Update task
         TaskItem outdatedTask = await _cachedRepository.UpdateAsync(task);
-        _auditLogger.Log(AuditEvent.TaskUpdated);
+        _auditLogger.Log(AuditEvent.TaskUpdated, $"Task with ID {task.Id} updated");
 
         // Send notification
         var notificationService = _notificationFactory.GetNotificationService(_tenantId);
@@ -110,7 +110,7 @@ public class TasksController : ControllerBase
 
         if (task == null)
         {
-            _auditLogger.Log(AuditEvent.NotFound);
+            _auditLogger.Log(AuditEvent.NotFound, $"Task with ID {id} not found");
             return NotFound(new { message = $"Task with ID {id} not found" });
         }
 
