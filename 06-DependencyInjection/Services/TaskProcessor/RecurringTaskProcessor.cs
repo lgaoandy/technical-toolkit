@@ -4,15 +4,16 @@ using DependencyInjection.Models;
 
 namespace DependencyInjection.Services;
 
-public class RecurringTaskProcessor(IAuditLogger auditLogger) : ITaskProcessor
+public class RecurringTaskProcessor(IAuditLogger auditLogger, ITenantProvider tenantProvider) : ITaskProcessor
 {
     private readonly IAuditLogger _logger = auditLogger;
+    private readonly string _tenantId = tenantProvider.GetTenantId();
 
     public void Process(TaskItem task)
     {
         string description = $"RECURRING: Processing task '{task.Title}' queued for execution";
         Console.WriteLine(description);
-        _logger.Log(AuditEvent.TaskProcessed, description);
+        _logger.Log(AuditEvent.TaskProcessed, description, _tenantId);
     }
 
     public TaskType GetProcessorType() => TaskType.Recurring;

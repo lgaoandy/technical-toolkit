@@ -8,39 +8,44 @@ namespace DependencyInjection.Services;
 public class AuditLogger : IAuditLogger
 {
     private static readonly Dictionary<string, List<AuditLogEntry>> _logs = [];
-    private readonly string _tenantId;
     private readonly AuditLoggerSettings _settings;
     private readonly Lock _lock = new();
 
     // Constructor
-    public AuditLogger(IOptions<AuditLoggerSettings> options, ITenantProvider tenantProvider)
+    public AuditLogger(IOptions<AuditLoggerSettings> options)
     {
         _settings = options.Value;
-        _tenantId = tenantProvider.GetTenantId();
     }
 
-    public void Log(AuditEvent auditEvent, string description)
+    public void Log(AuditEvent auditEvent, string description, string tenantId)
     {
         lock (_lock)
         {
             // Ensure tenant exists as a key
-            _logs.TryAdd(_tenantId, []);
+            _logs.TryAdd(tenantId, []);
 
             // If logs of current tenant exceeds max entries, remove the first entry
-            if (_logs[_tenantId].Count > _settings.MaxLogEntries)
+            if (_logs[tenantId].Count > _settings.MaxLogEntries)
             {
-                _logs[_tenantId].RemoveAt(0);
+                _logs[tenantId].RemoveAt(0);
             }
 
             // Create new entry
-            var entry = new AuditLogEntry{
-                TenantId = _tenantId,
+            var entry = new AuditLogEntry
+            {
+                TenantId = tenantId,
                 AuditEvent = auditEvent,
                 Description = description,
                 Timestamp = DateTime.UtcNow
             };
 
-            _logs[_tenantId].Add(entry);
+            _logs[tenantId].Add(entry);
+
+            // Console log messages
+            if (_settings.LogLevel == "Detailed")
+                LogDetailed(entry);
+            if (_settings.LogLevel == "Summary")
+                LogSummary(entry);
         }
     }
 
@@ -58,5 +63,25 @@ public class AuditLogger : IAuditLogger
         }
 
         return counter;
+    }
+
+    private void LogDetailed(AuditLogEntry entry)
+    {
+        var message = $"[AUDIT]";
+
+        if (_settings.IncludeTenantId)
+            message += $" [{entry.Timestamp:yyyy-MM-dd HH:mm:ss}]";
+
+        message += $" {entry.AuditEvent} - {entry.Description}";
+
+        if (_settings.IncludeTenantId)
+            message += $" for {entry.TenantId}";
+
+        Console.WriteLine(message);
+    }
+
+    private void LogSummary(AuditLogEntry entry)
+    {
+        Console.WriteLine($"[AUDIT] {entry.AuditEvent}");
     }
 }
