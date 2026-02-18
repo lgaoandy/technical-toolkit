@@ -6,6 +6,7 @@ namespace DependencyInjection.Services;
 
 public class ScheduledTaskProcessor(IAuditLogger auditLogger, ITenantProvider tenantProvider) : ITaskProcessor
 {
+    public TaskType ProcessorType => TaskType.Scheduled;
     private readonly IAuditLogger _logger = auditLogger;
     private readonly string _tenantId = tenantProvider.GetTenantId();
 
@@ -15,6 +16,4 @@ public class ScheduledTaskProcessor(IAuditLogger auditLogger, ITenantProvider te
         Console.WriteLine(description);
         _logger.Log(AuditEvent.TaskScheduled, description, _tenantId);
     }
-
-    public TaskType GetProcessorType() => TaskType.Scheduled;
 }

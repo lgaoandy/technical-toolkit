@@ -6,6 +6,7 @@ namespace DependencyInjection.Services;
 
 public class UrgentTaskProcess(IAuditLogger audioLogger, ITenantProvider tenantProvider) : ITaskProcessor
 {
+    public TaskType ProcessorType => TaskType.Urgent;
     private readonly IAuditLogger _logger = audioLogger;
     private readonly string _tenantId = tenantProvider.GetTenantId();
 
@@ -16,5 +17,4 @@ public class UrgentTaskProcess(IAuditLogger audioLogger, ITenantProvider tenantP
         _logger.Log(AuditEvent.TaskProcessed, description, _tenantId);
     }
 
-    public TaskType GetProcessorType() => TaskType.Urgent;
 }

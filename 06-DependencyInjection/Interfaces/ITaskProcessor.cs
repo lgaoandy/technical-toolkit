@@ -5,7 +5,11 @@ namespace DependencyInjection.Interfaces;
 
 public interface ITaskProcessor
 {
+    TaskType ProcessorType { get; }
     void Process(TaskItem task);
-    TaskType GetProcessorType();
 }
 
+public interface ITaskProcessorFactory
+{
+    ITaskProcessor CreateProcessor(string TaskType);
+}
