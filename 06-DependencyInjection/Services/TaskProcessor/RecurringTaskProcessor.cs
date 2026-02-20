@@ -13,7 +13,6 @@ public class RecurringTaskProcessor(IAuditLogger auditLogger, ITenantProvider te
     public void Process(TaskItem task)
     {
         string description = $"RECURRING: Processing task '{task.Title}' queued for execution";
-        Console.WriteLine(description);
         _logger.Log(AuditEvent.TaskProcessed, description, _tenantId);
     }
 }

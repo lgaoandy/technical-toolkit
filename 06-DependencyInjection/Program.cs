@@ -25,6 +25,14 @@ builder.Services.AddScoped<ITaskValidator, TaskValidator>();
 builder.Services.AddScoped<TaskRepository>();
 builder.Services.AddScoped<ITaskRepository, CachedTaskRepository>();
 
+// Register task processors
+builder.Services.AddTransient<UrgentTaskProcessor>();
+builder.Services.AddTransient<ScheduledTaskProcessor>();
+builder.Services.AddTransient<RecurringTaskProcessor>();
+
+// Register the factory as a singleton - it's stateless
+builder.Services.AddScoped<ITaskProcessorFactory, TaskProcessorFactory>();
+
 // Register notification services with keys
 builder.Services.AddKeyedTransient<INotificationService, EmailNotificationService>(NotificationType.Email);
 builder.Services.AddKeyedTransient<INotificationService, SmsNotificationService>(NotificationType.SMS);

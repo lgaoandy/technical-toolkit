@@ -4,7 +4,7 @@
 @tenantB = tenant-b
 @tenantC = tenant-c
 
-### Test 1a: Create task for Tenant A
+### Test 1a: Create an urgent task for Tenant A
 POST {{baseUrl}}/tasks
 X-Tenant-Id: {{tenantA}}
 Content-Type: application/json
@@ -15,7 +15,7 @@ Content-Type: application/json
   "type": "urgent"
 }
 
-### Test 1b: Create task for Tenant B
+### Test 1b: Create a scheduled task for Tenant B
 POST {{baseUrl}}/tasks
 X-Tenant-Id: {{tenantB}}
 Content-Type: application/json
@@ -26,7 +26,7 @@ Content-Type: application/json
   "type": "scheduled"
 }
 
-### Test 1c: Create task for Tenant C
+### Test 1c: Create recurring task for Tenant C
 POST {{baseUrl}}/tasks
 X-Tenant-Id: {{tenantC}}
 Content-Type: application/json
@@ -34,7 +34,7 @@ Content-Type: application/json
 {
   "title": "Setup for C",
   "description": "First task for Tenant C",
-  "type": "scheduled"
+  "type": "Recurring"
 }
 
 ### Test 2: Create a task with invalid type (should fail)

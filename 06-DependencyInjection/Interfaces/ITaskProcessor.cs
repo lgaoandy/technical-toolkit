@@ -11,5 +11,5 @@ public interface ITaskProcessor
 
 public interface ITaskProcessorFactory
 {
-    ITaskProcessor CreateProcessor(string TaskType);
+    ITaskProcessor CreateProcessor(TaskType taskType);
 }

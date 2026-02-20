@@ -13,7 +13,6 @@ public class ScheduledTaskProcessor(IAuditLogger auditLogger, ITenantProvider te
     public void Process(TaskItem task)
     {
         string description = $"SCHEDULE: Processing task '{task.Title}' queued for execution";
-        Console.WriteLine(description);
         _logger.Log(AuditEvent.TaskScheduled, description, _tenantId);
     }
 }

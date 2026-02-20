@@ -4,7 +4,7 @@ using DependencyInjection.Models;
 
 namespace DependencyInjection.Services;
 
-public class UrgentTaskProcess(IAuditLogger audioLogger, ITenantProvider tenantProvider) : ITaskProcessor
+public class UrgentTaskProcessor(IAuditLogger audioLogger, ITenantProvider tenantProvider) : ITaskProcessor
 {
     public TaskType ProcessorType => TaskType.Urgent;
     private readonly IAuditLogger _logger = audioLogger;
@@ -13,7 +13,6 @@ public class UrgentTaskProcess(IAuditLogger audioLogger, ITenantProvider tenantP
     public void Process(TaskItem task)
     {
         string description = $"URGENT: Processing task '{task.Title}' immediately with HIGH priority";
-        Console.WriteLine(description);
         _logger.Log(AuditEvent.TaskProcessed, description, _tenantId);
     }
 
