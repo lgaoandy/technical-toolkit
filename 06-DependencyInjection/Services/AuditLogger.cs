@@ -80,7 +80,7 @@ public class AuditLogger : IAuditLogger
         Console.WriteLine(message);
     }
 
-    private void LogSummary(AuditLogEntry entry)
+    private static void LogSummary(AuditLogEntry entry)
     {
         Console.WriteLine($"[AUDIT] {entry.AuditEvent}");
     }

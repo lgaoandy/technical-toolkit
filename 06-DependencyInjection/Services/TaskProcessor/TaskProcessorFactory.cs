@@ -1,3 +1,4 @@
+using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 
 namespace DependencyInjection.Services;
@@ -5,21 +6,17 @@ namespace DependencyInjection.Services;
 public class TaskProcessorFactory : ITaskProcessorFactory
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly string _tenantId;
 
-    public TaskProcessorFactory(IServiceProvider serviceProvider, ITenantProvider tenantProvider)
+    public TaskProcessorFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _tenantId = tenantProvider.GetTenantId();
     }
 
-    public ITaskProcessor CreateProcessor(string TaskType)
+    public ITaskProcessor CreateProcessor(TaskType taskType) => taskType switch
     {
-        // TODO: Implement
-        // Should return:
-        // - UrgentTaskProcessor when taskType = urgent
-        // - ScheduledTaskProcessor when taskType = scheduled
-        // - RecurringTaskProcessor when taskType = recurring
-        throw new NotImplementedException();
-    }
+        TaskType.Urgent => _serviceProvider.GetRequiredService<UrgentTaskProcessor>(),
+        TaskType.Scheduled => _serviceProvider.GetRequiredService<ScheduledTaskProcessor>(),
+        TaskType.Recurring => _serviceProvider.GetRequiredService<RecurringTaskProcessor>(),
+        _ => throw new ArgumentException($"Unknown task type: {taskType}")
+    };
 }

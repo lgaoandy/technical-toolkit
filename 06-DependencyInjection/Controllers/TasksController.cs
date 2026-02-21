@@ -1,6 +1,7 @@
 using DependencyInjection.Enums;
 using DependencyInjection.Interfaces;
 using DependencyInjection.Models;
+using DependencyInjection.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DependencyInjection.Controllers;
@@ -14,6 +15,7 @@ public class TasksController : ControllerBase
     private readonly ITaskRepository _cachedRepository;
     private readonly IAuditLogger _auditLogger;
     private readonly INotificationServiceFactory _notificationFactory;
+    private readonly ITaskProcessorFactory _taskProcessorFactory;
     private readonly string _tenantId;
 
     // Constructor
@@ -22,13 +24,15 @@ public class TasksController : ControllerBase
         ITaskValidator validator,
         IAuditLogger auditLogger,
         ITaskRepository cachedRepository,
-        INotificationServiceFactory notificationFactory
+        INotificationServiceFactory notificationFactory,
+        ITaskProcessorFactory taskProcessFactory
     )
     {
         _validator = validator;
         _cachedRepository = cachedRepository;
         _auditLogger = auditLogger;
         _notificationFactory = notificationFactory;
+        _taskProcessorFactory = taskProcessFactory;
         _tenantId = tenantProvider.GetTenantId();
     }
 
@@ -50,6 +54,10 @@ public class TasksController : ControllerBase
 
         // Log task created
         _auditLogger.Log(AuditEvent.TaskCreated, $"Task with ID {task.Id} created", _tenantId);
+
+        // Process task type
+        var taskProcessor = _taskProcessorFactory.CreateProcessor(task.Type);
+        taskProcessor.Process(task);
 
         // Get correct notification service for this tenant
         var notificationService = _notificationFactory.GetNotificationService(_tenantId);
