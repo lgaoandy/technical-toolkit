@@ -6,7 +6,9 @@ using DependencyInjection.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<TenantNotificationSettings>(builder.Configuration);
+builder.Services.Configure<TenantNotificationSettings>(
+    builder.Configuration.GetSection("TenantNOtificationPreferences")
+);
 
 // Add HttpContextAccessor - required for tenantProvider
 builder.Services.AddHttpContextAccessor();
